@@ -133,7 +133,7 @@
 /* Phone-first layout and navigation */
 .mobile-menu-toggle, .mobile-nav-actions { display: none; }
 @media (max-width: 760px) {
-  html, body { overflow-x: hidden; }
+  html, body { overflow-x: clip; }
   .wrap-wide { width: min(100% - 32px, 610px); }
   .utility-bar { display: none; }
   .main-nav { position: relative; min-height: 78px; }
