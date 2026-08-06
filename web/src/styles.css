@@ -91,7 +91,7 @@
 /* Financing context from the selected vehicle */
 .finance-selected-vehicle { display: grid; gap: 3px; padding: 13px 15px; border-left: 3px solid var(--amber); color: #36413f; background: #e6ece9; }.finance-selected-vehicle span { color: #7b673d; font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }.finance-selected-vehicle strong { color: #1c2624; font-family: 'Barlow Condensed', sans-serif; font-size: 23px; letter-spacing: .01em; text-transform: uppercase; }.finance-selected-vehicle small { color: #60716b; font-size: 11px; }
 
-/* Unified RetroDrive palette: graphite, warm amber, and ivory */
+/* B & B Auto Exchange palette: graphite, warm amber, and ivory */
 :root { --black: #121718; --black-2: #1c2222; --paper: #f5f1e9; --ash: #a8aeaa; --line: rgba(245,241,233,.18); --amber: #d99b35; --amber-dark: #a86d1a; }
 .partner-network, .hollywood-shipping, .hollywood-about { color: #242c2b; background: #f5f1e9; }
 .partner-metrics article, .credential-list article, .partner-mark, .shipping-route, .shipping-tier, .shipping-process-grid article, .about-story figure, .about-stats article, .about-map { border-color: #d8d0c3; background: #fffdf8; }
@@ -166,7 +166,7 @@
   .wrap-wide { width: calc(100% - 28px); }.garage-mark { font-size: 28px; }.garage-mark small { top: 26px; font-size: 6px; }.mobile-menu-toggle { width: 45px; padding: 8px; }.mobile-menu-toggle b { display: none; }.hero-actions { align-items: stretch; flex-direction: column; }.hero-actions .amber-button { width: 100%; }.vehicle-toolbar { gap: 6px; }.vehicle-toolbar button { padding: 7px 8px; font-size: 10px; }.partner-heading h2 { font-size: 45px; }
 }
 
-/* Refined mobile controls and custom RetroDrive call mark */
+/* Refined mobile controls and custom B & B call mark */
 .call-mark { position: relative; display: inline-block; width: 20px; height: 20px; flex: 0 0 20px; color: currentColor; transform: rotate(-42deg); }.call-mark::before { position: absolute; top: 2px; left: 6px; width: 8px; height: 15px; border: 3px solid currentColor; border-top-color: transparent; border-bottom-color: transparent; border-radius: 9px; content: ''; }.call-mark::after { position: absolute; top: 1px; left: 8px; width: 5px; height: 5px; border-radius: 2px; background: currentColor; box-shadow: 0 13px 0 currentColor; content: ''; }
 .header-phone .call-mark { width: 15px; height: 15px; }.header-phone .call-mark::before { top: 1px; left: 5px; width: 6px; height: 12px; border-width: 2px; }.header-phone .call-mark::after { top: 1px; left: 6px; width: 4px; height: 4px; box-shadow: 0 9px 0 currentColor; }
 .floating-phone { width: 56px; height: 56px; border-color: rgba(217,155,53,.82); color: var(--amber); background: #252e2d; box-shadow: 0 14px 34px rgba(0,0,0,.38); }.floating-phone:hover { color: #202827; background: var(--amber); box-shadow: 0 18px 38px rgba(0,0,0,.45); }.floating-phone::before { position: absolute; inset: 6px; border: 1px solid rgba(217,155,53,.35); border-radius: 50%; content: ''; }.floating-phone:hover::before { border-color: rgba(32,40,39,.28); }

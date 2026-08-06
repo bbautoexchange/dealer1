@@ -5,26 +5,24 @@ const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? '
 
 export const defaultTrustedNetwork: TrustedNetworkContent = {
   metrics: [
-    { value: '15+', label: 'Years in business', detail: 'Built around collector cars' },
-    { value: '1.2K+', label: 'Vehicles delivered', detail: 'Nationwide delivery support' },
-    { value: '98%', label: 'Client satisfaction', detail: 'Based on buyer feedback' },
-    { value: '50', label: 'States served', detail: 'Door-to-door availability' },
+    { value: 'Retro only', label: 'Inventory focus', detail: 'Classic vehicles with character' },
+    { value: 'Vehicle-led', label: 'Every listing', detail: 'Specs, photos, and context' },
+    { value: 'Nationwide', label: 'Delivery planning', detail: 'Route support when needed' },
+    { value: 'Direct', label: 'B & B support', detail: 'Questions welcomed' },
   ],
-  eyebrow: 'Trusted network',
-  title: 'LICENSED & PARTNERED',
-  description: 'The specialists behind your purchase, financing, and delivery work together to keep each step clear.',
+  eyebrow: 'The B & B approach',
+  title: 'CLASSICS, KEPT PERSONAL',
+  description: 'B & B Auto Exchange keeps the process centered on the vehicle, the details that matter, and a clear next step.',
   credentials: [
-    { icon: 'licensed', title: 'Licensed Motor Vehicle Dealer', detail: 'License details are provided with your purchase documentation.', status: 'Verified' },
-    { icon: 'authorized', title: 'Authorized Dealer', detail: 'Curated classic, collector, and performance inventory.', status: 'Authorized' },
-    { icon: 'certified', title: 'Certified Classic Dealer', detail: 'Vehicle histories, condition notes, and delivery planning in one place.', status: 'Certified' },
+    { icon: 'licensed', title: 'Retro and classic only', detail: 'The collection is dedicated to timeless vehicles with real character.', status: 'Focused' },
+    { icon: 'authorized', title: 'Details before decisions', detail: 'Each listing brings together the specifications, condition context, and available media.', status: 'Clear' },
+    { icon: 'certified', title: 'Personal next steps', detail: 'Ask about a vehicle, finance planning, or delivery from the same place.', status: 'Personal' },
   ],
   partners: [
-    { mark: 'ALLY', name: 'Ally Financial', category: 'Auto financing', image: '/partners/ally.svg' },
-    { mark: 'CAP', name: 'Capital One', category: 'Auto finance', image: '/partners/capitalone.svg' },
-    { mark: 'MON', name: 'Montway', category: 'Vehicle transport', image: '/partners/montway.svg' },
-    { mark: 'AT', name: 'AutoTrader', category: 'Marketplace', image: '/partners/autotrader.svg' },
-    { mark: 'CARFAX', name: 'Carfax', category: 'Vehicle history', image: '/partners/carfax.svg' },
-    { mark: 'CS', name: 'CarShield', category: 'Extended warranty', image: '/partners/carshield.svg' },
+    { mark: '01', name: 'Discover', category: 'Browse the collection' },
+    { mark: '02', name: 'Review', category: 'Explore the vehicle file' },
+    { mark: '03', name: 'Plan', category: 'Finance or delivery' },
+    { mark: '04', name: 'Connect', category: 'Talk with B & B' },
   ],
 }
 

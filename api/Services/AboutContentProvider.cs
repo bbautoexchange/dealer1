@@ -65,34 +65,34 @@ public sealed class AboutContentProvider(
 
     private static AboutContent Default => new(
         "Who we are",
-        "ABOUT RETRODRIVE USA",
-        "A classic-car buying experience built around clear information, responsive communication, and nationwide coordination.",
+        "ABOUT B & B AUTO EXCHANGE",
+        "B & B Auto Exchange is dedicated exclusively to retro and classic vehicles, with clear information and a personal buying experience.",
         new AboutStory(
             "Our Story",
             [
-                "RetroDrive USA is built for people who care about the character, history, and driving feel that make a classic vehicle memorable.",
-                "We focus on clear vehicle information, direct answers, and a purchase process that works whether you are nearby or across the country.",
-                "Each conversation starts with the details that matter to you: the vehicle, its condition, your timeline, and the next step."
+                "B & B Auto Exchange is for people who value the character, history, and driving feel that make a retro or classic vehicle memorable.",
+                "We keep the focus narrow: timeless vehicles, thoughtful presentation, and the details that help you understand each car before making a decision.",
+                "Every conversation starts with what matters to you: the vehicle, its condition, your timeline, and the right next step."
             ],
-            "The RetroDrive standard: clear details and a thoughtful buying experience.",
-            "Classic vehicle specialists",
+            "The B & B standard: timeless vehicles and clear details.",
+            "Retro and classic vehicle specialists",
             "Vehicle, documentation, and delivery details are reviewed with you before the next step."),
         new AboutContact(
             "Contact & Location",
             "Showroom address",
-            "Contact RetroDrive for showroom details and appointments.",
+            "Contact B & B Auto Exchange for showroom details and appointments.",
             "Phone",
             "Call us to discuss a vehicle",
-            "Appointments and calls are coordinated directly with the RetroDrive team.",
+            "Appointments and calls are coordinated directly with the B & B team.",
             "Email",
-            "info@retrodriveusa.com",
+            "sales@bbautoexchange.com",
             "We respond as soon as possible during business hours.",
             "Business hours",
-            "By appointment · Monday–Saturday"),
+            "By appointment / Monday-Saturday"),
         [
-            new AboutStat("Collector focused", "Vehicle selection", "Classic, muscle & performance"),
-            new AboutStat("Nationwide", "Delivery coordination", "Across the United States"),
-            new AboutStat("Direct", "Specialist support", "Clear answers at every step"),
-            new AboutStat("Documented", "Vehicle details", "History and condition context")
+            new AboutStat("Retro only", "Vehicle selection", "Classic vehicles with character"),
+            new AboutStat("Nationwide", "Delivery planning", "Across the United States"),
+            new AboutStat("Direct", "Personal support", "Clear answers at every step"),
+            new AboutStat("Detailed", "Vehicle information", "Condition and history context")
         ]);
 }

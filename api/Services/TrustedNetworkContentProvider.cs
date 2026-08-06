@@ -10,7 +10,6 @@ public sealed class TrustedNetworkContentProvider(
     ILogger<TrustedNetworkContentProvider> logger)
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
-
     private readonly string? contentJson = options.Value.ContentJson;
 
     public TrustedNetworkContent Get()
@@ -57,25 +56,23 @@ public sealed class TrustedNetworkContentProvider(
 
     private static TrustedNetworkContent Default => new(
         [
-            new TrustMetric("15+", "Years in business", "Built around collector cars"),
-            new TrustMetric("1.2K+", "Vehicles delivered", "Nationwide delivery support"),
-            new TrustMetric("98%", "Client satisfaction", "Based on buyer feedback"),
-            new TrustMetric("50", "States served", "Door-to-door availability")
+            new TrustMetric("Retro only", "Inventory focus", "Classic vehicles with character"),
+            new TrustMetric("Vehicle-led", "Every listing", "Specs, photos, and context"),
+            new TrustMetric("Nationwide", "Delivery planning", "Route support when needed"),
+            new TrustMetric("Direct", "B & B support", "Questions welcomed")
         ],
-        "Trusted network",
-        "LICENSED & PARTNERED",
-        "The specialists behind your purchase, financing, and delivery work together to keep each step clear.",
+        "The B & B approach",
+        "CLASSICS, KEPT PERSONAL",
+        "B & B Auto Exchange keeps the process centered on the vehicle, the details that matter, and a clear next step.",
         [
-            new TrustCredential("licensed", "Licensed Motor Vehicle Dealer", "License details are provided with your purchase documentation.", "Verified"),
-            new TrustCredential("authorized", "Authorized Dealer", "Curated classic, collector, and performance inventory.", "Authorized"),
-            new TrustCredential("certified", "Certified Classic Dealer", "Vehicle histories, condition notes, and delivery planning in one place.", "Certified")
+            new TrustCredential("licensed", "Retro and classic only", "The collection is dedicated to timeless vehicles with real character.", "Focused"),
+            new TrustCredential("authorized", "Details before decisions", "Each listing brings together the specifications, condition context, and available media.", "Clear"),
+            new TrustCredential("certified", "Personal next steps", "Ask about a vehicle, finance planning, or delivery from the same place.", "Personal")
         ],
         [
-            new TrustPartner("ALLY", "Ally Financial", "Auto financing", "/partners/ally.svg"),
-            new TrustPartner("CAP", "Capital One", "Auto finance", "/partners/capitalone.svg"),
-            new TrustPartner("MON", "Montway", "Vehicle transport", "/partners/montway.svg"),
-            new TrustPartner("AT", "AutoTrader", "Marketplace", "/partners/autotrader.svg"),
-            new TrustPartner("CARFAX", "Carfax", "Vehicle history", "/partners/carfax.svg"),
-            new TrustPartner("CS", "CarShield", "Extended warranty", "/partners/carshield.svg")
+            new TrustPartner("01", "Discover", "Browse the collection"),
+            new TrustPartner("02", "Review", "Explore the vehicle file"),
+            new TrustPartner("03", "Plan", "Finance or delivery"),
+            new TrustPartner("04", "Connect", "Talk with B & B")
         ]);
 }

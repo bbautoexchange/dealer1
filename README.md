@@ -1,6 +1,6 @@
-# RetroDrive USA
+# B & B Auto Exchange
 
-Small, lead-first website for selling classic and vintage vehicles across the United States.
+Lead-first website for B & B Auto Exchange, focused exclusively on retro and classic vehicles across the United States.
 
 ## What is included in this first stage
 

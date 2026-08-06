@@ -1,0 +1,18 @@
+# Local frontend dependencies and production build output
+web/node_modules/
+web/dist/
+
+# Local .NET build output
+api/bin/
+api/obj/
+
+# Local configuration and runtime data
+api/appsettings.Development.json
+api/App_Data/
+
+# Editor and operating-system files
+.vs/
+.vscode/
+*.user
+*.suo
+.DS_Store

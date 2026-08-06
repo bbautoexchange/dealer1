@@ -6,9 +6,9 @@ type Props = { go: (href: string) => void }
 type Status = { type: 'idle' | 'sending' | 'success' | 'error'; message: string }
 
 const fallback: SiteSettingsContent = {
-  showroomAddress: 'Set showroom address in Render',
+  showroomAddress: 'Contact B & B Auto Exchange for appointment details',
   phone: 'Set showroom phone in Render',
-  email: 'info@retrodriveusa.com',
+  email: 'sales@bbautoexchange.com',
   showroomHours: 'By appointment',
 }
 
@@ -36,7 +36,7 @@ export default function FooterHollywood({ go }: Props) {
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.showroomAddress)}`
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setStatus({ type: 'sending', message: 'Joining…' })
+    setStatus({ type: 'sending', message: 'Joining...' })
     try {
       setStatus({ type: 'success', message: await subscribeVip({ email, pageUrl: window.location.href }) })
       setEmail('')
@@ -48,8 +48,8 @@ export default function FooterHollywood({ go }: Props) {
   return <footer className="hollywood-footer">
     <div className="hollywood-footer-grid wrap-wide">
       <section className="hollywood-footer-company">
-        <button className="garage-mark footer-mark" onClick={() => go('/')}><span>RETRO</span>DRIVE<small>USA · CLASSIC MOTOR CARS</small></button>
-        <p>Classic, collector, and performance vehicles supported by clear information and straightforward delivery coordination.</p>
+        <button className="garage-mark footer-mark" onClick={() => go('/')}><span>B &amp; B</span> AUTO<small>EXCHANGE / RETRO &amp; CLASSIC VEHICLES</small></button>
+        <p>B & B Auto Exchange is focused exclusively on retro and classic vehicles, supported by clear information and personal coordination.</p>
         <div className="hollywood-footer-contact">
           <strong>Showroom Address</strong>
           <a href={mapsUrl} target="_blank" rel="noreferrer">{settings.showroomAddress}</a>
@@ -63,25 +63,25 @@ export default function FooterHollywood({ go }: Props) {
       </section>
       <section className="hollywood-footer-links">
         <h2>Operations</h2>
-        <button onClick={() => go('/inventory')}>Inventory</button>
+        <button onClick={() => go('/inventory')}>Classic Collection</button>
         <button onClick={() => go('/financing')}>Financing</button>
-        <button onClick={() => go('/shipping')}>Shipping & Delivery</button>
-        <button onClick={() => go('/about')}>Corporate Profile</button>
+        <button onClick={() => go('/shipping')}>Transport & Delivery</button>
+        <button onClick={() => go('/about')}>About B & B</button>
         <hr />
         <button onClick={() => go('/privacy')}>Privacy Policy</button>
         <button onClick={() => go('/terms')}>Terms of Service</button>
-        <button onClick={() => go('/returns')}>Return Policy</button>
+        <button onClick={() => go('/returns')}>Purchase Terms</button>
       </section>
       <section className="hollywood-footer-vip">
         <h2>Private VIP List</h2>
-        <p>Receive new classic vehicle arrival alerts.</p>
+        <p>Receive alerts when a retro or classic vehicle joins the collection.</p>
         <form onSubmit={submit}><input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Your email" aria-label="Your email" /><button disabled={status.type === 'sending'}>Join</button></form>
         {status.type !== 'idle' && <small className={`hollywood-footer-status ${status.type}`}>{status.message}</small>}
       </section>
     </div>
     <div className="hollywood-footer-bottom">
-      <span>© {new Date().getFullYear()} RetroDrive USA. All Rights Reserved.</span>
-      <div><button onClick={() => go('/privacy')}>Privacy Policy</button><button onClick={() => go('/terms')}>Terms of Service</button><button onClick={() => go('/returns')}>Return Policy</button><button onClick={() => go('/admin')}>Admin Access</button></div>
+      <span>&copy; {new Date().getFullYear()} B &amp; B Auto Exchange. All rights reserved.</span>
+      <div><button onClick={() => go('/privacy')}>Privacy Policy</button><button onClick={() => go('/terms')}>Terms of Service</button><button onClick={() => go('/returns')}>Purchase Terms</button><button onClick={() => go('/admin')}>Admin Access</button></div>
     </div>
   </footer>
 }

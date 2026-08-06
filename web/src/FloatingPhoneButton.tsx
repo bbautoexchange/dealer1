@@ -12,5 +12,5 @@ export default function FloatingPhoneButton() {
   const callLink = phoneHref(phone)
   if (!callLink) return null
 
-  return <a className="floating-phone" href={callLink} aria-label={`Call RetroDrive at ${phone}`} title={`Call us: ${phone}`}><span className="call-mark" aria-hidden="true" /></a>
+  return <a className="floating-phone" href={callLink} aria-label={`Call B & B Auto Exchange at ${phone}`} title={`Call B & B Auto Exchange: ${phone}`}><span className="call-mark" aria-hidden="true" /></a>
 }

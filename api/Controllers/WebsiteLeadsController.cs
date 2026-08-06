@@ -30,8 +30,8 @@ public sealed class WebsiteLeadsController(ICloseLeadClient closeLeadClient, ILo
     [HttpPost("newsletter")]
     public Task<ActionResult<CreateInquiryResponse>> Newsletter([FromBody] NewsletterRequest request, CancellationToken cancellationToken) =>
         Deliver(new WebsiteLead("Website VIP list subscription", "VIP", "Subscriber", request.Email, null,
-            "Requested email alerts for RetroDrive USA arrivals and updates.\nSource: Website VIP list", request.PageUrl, "Website VIP list"),
-            "You are on the RetroDrive VIP list. Watch your inbox for new arrivals.", cancellationToken);
+            "Requested email alerts for B & B Auto Exchange arrivals and updates.\nSource: Website VIP list", request.PageUrl, "Website VIP list"),
+            "You are on the B & B Auto Exchange VIP list. Watch your inbox for new arrivals.", cancellationToken);
 
     [HttpPost("delivery")]
     public Task<ActionResult<CreateInquiryResponse>> Delivery([FromBody] DeliveryQuoteRequest request, CancellationToken cancellationToken) =>

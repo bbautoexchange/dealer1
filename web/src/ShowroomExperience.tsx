@@ -1,8 +1,8 @@
 type Props = { go: (href: string) => void }
 
 const gallery = [
-  { src: '/showroom/showroom1.jpg', alt: 'Classic vehicle inside the RetroDrive showroom' },
-  { src: '/showroom/showroom2.jpg', alt: 'RetroDrive showroom detail' },
+  { src: '/showroom/showroom1.jpg', alt: 'Classic vehicle inside the B & B Auto Exchange showroom' },
+  { src: '/showroom/showroom2.jpg', alt: 'B & B Auto Exchange showroom detail' },
   { src: '/showroom/showroom3.jpg', alt: 'Classic car collection indoors' },
 ]
 
@@ -12,7 +12,7 @@ export default function ShowroomExperience({ go }: Props) {
       <div className="wrap-wide showroom-story-grid">
         <div className="showroom-image-stack">
           <img className="showroom-warehouse" src="/showroom/classic_warehouse.jpg" alt="Classic vehicles in a warehouse" />
-          <div className="showroom-caption"><span>RETRODRIVE</span><strong>THE COLLECTION,<br />IN CONTEXT.</strong></div>
+          <div className="showroom-caption"><span>B &amp; B AUTO EXCHANGE</span><strong>THE COLLECTION,<br />IN CONTEXT.</strong></div>
         </div>
         <div className="showroom-story-copy">
           <p className="garage-kicker">A better way to browse</p>
@@ -21,7 +21,7 @@ export default function ShowroomExperience({ go }: Props) {
           <div className="showroom-story-points">
             <article><span>01</span><div><strong>Browse with intent</strong><p>Filter the live collection by make, price, and saved vehicles.</p></div></article>
             <article><span>02</span><div><strong>Plan the handoff</strong><p>Estimate payments, delivery, or a trade-in before you submit a request.</p></div></article>
-            <article><span>03</span><div><strong>Keep the conversation simple</strong><p>Every request is delivered to the RetroDrive team with the vehicle context attached.</p></div></article>
+            <article><span>03</span><div><strong>Keep the conversation simple</strong><p>Every request goes to the B & B team with the vehicle context attached.</p></div></article>
           </div>
           <button className="outline-link showroom-link" onClick={() => go('/inventory')}>Explore the collection <span>→</span></button>
         </div>
@@ -29,7 +29,7 @@ export default function ShowroomExperience({ go }: Props) {
     </section>
 
     <section className="showroom-tour wrap-wide">
-      <div className="showroom-tour-heading"><div><p className="garage-kicker">Inside RetroDrive</p><h2>TAKE A LOOK<br /><em>AROUND.</em></h2></div><p>Classic-car buying starts with the atmosphere, then earns your confidence through the details.</p></div>
+      <div className="showroom-tour-heading"><div><p className="garage-kicker">Inside B &amp; B</p><h2>TAKE A LOOK<br /><em>AROUND.</em></h2></div><p>Classic-car buying starts with the atmosphere, then earns your confidence through the details.</p></div>
       <div className="showroom-tour-grid">{gallery.map((image, index) => <figure key={image.src}><img src={image.src} alt={image.alt} loading="lazy" /><figcaption><span>0{index + 1}</span>{index === 0 ? 'Cars with character' : index === 1 ? 'Details worth seeing' : 'A collection in motion'}</figcaption></figure>)}</div>
     </section>
 
