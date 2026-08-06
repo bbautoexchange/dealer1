@@ -76,6 +76,9 @@
 @media (max-width: 600px) { .hollywood-about { padding: 61px 0 76px; }.about-hero { padding-bottom: 46px; }.about-hero h1 { font-size: 49px; }.about-contact { padding: 27px 20px; }.about-license { grid-template-columns: 32px 1fr; padding: 13px; }.about-license b { grid-column: 2; justify-self: start; }.about-contact-actions { flex-direction: column; }.about-stats { grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 50px; }.about-stats article { min-height: 125px; padding: 18px 9px; }.about-map { margin-top: 42px; }.about-map iframe { height: 300px; } }
 .about-license-icon:has(img) { border: 0; background: transparent; }.about-license-icon img { display: block; width: 33px; height: 33px; }
 
+/* Generated contact badges for the B & B Auto Exchange contact panel */
+.about-contact-row { grid-template-columns: 42px 1fr; }.about-contact-row > span { width: 34px; height: 34px; border: 0; border-radius: 0; background: transparent; }.about-contact-row > span img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
 /* Header call action */
 .header-actions { display: flex; align-items: center; gap: 12px; }.header-phone { display: inline-flex; align-items: center; gap: 7px; border: 1px solid #687270; padding: 10px 12px; color: #e2e4df; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: .035em; text-decoration: none; }.header-phone:hover { border-color: var(--amber); color: var(--amber); }.header-phone span { white-space: nowrap; }
 @media (max-width: 980px) { .header-actions { display: none; } }

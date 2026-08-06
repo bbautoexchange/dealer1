@@ -4,6 +4,7 @@ import type { AboutContent, SiteSettingsContent, TrustedNetworkContent } from '.
 
 type Props = { go: (href: string) => void }
 const trustIconSources: Record<string, string> = { licensed: '/trust-icons/licensed.svg', authorized: '/trust-icons/authorized.svg', certified: '/trust-icons/certified.svg', '01': '/trust-icons/licensed.svg', '02': '/trust-icons/authorized.svg', '03': '/trust-icons/certified.svg' }
+const contactIconSources: Record<string, string> = { Location: '/contact-icons/location.png', Phone: '/contact-icons/phone.png', Email: '/contact-icons/email.png', Hours: '/contact-icons/hours.png' }
 
 const fallback: AboutContent = {
   eyebrow: 'Who we are',
@@ -62,5 +63,5 @@ export default function AboutPage({ go }: Props) {
 }
 
 function ContactItem({ icon, title, children }: { icon: string; title: string; children: React.ReactNode }) {
-  return <div className="about-contact-row"><span>{icon}</span><div><strong>{title}</strong>{children}</div></div>
+  return <div className="about-contact-row"><span><img src={contactIconSources[icon]} alt="" /></span><div><strong>{title}</strong>{children}</div></div>
 }
