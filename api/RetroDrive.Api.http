@@ -1,0 +1,6 @@
+@RetroDrive.Api_HostAddress = http://localhost:5141
+
+GET {{RetroDrive.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

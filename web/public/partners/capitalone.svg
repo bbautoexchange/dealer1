@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 80" width="220" height="80">
+  <rect width="220" height="80" fill="white"/>
+  <polygon points="20,40 34,18 48,40 34,62" fill="#004977"/>
+  <text x="58" y="33" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="#004977" letter-spacing="0.5">CAPITAL</text>
+  <text x="58" y="51" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="#004977" letter-spacing="0.5">ONE</text>
+</svg>

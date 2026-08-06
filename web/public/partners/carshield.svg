@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" width="240" height="80">
+  <rect width="240" height="80" fill="white"/>
+  <path d="M16,12 L30,12 L35,18 L35,42 Q35,58 23,62 Q11,58 11,42 L11,18 Z" fill="#C8102E"/>
+  <text x="13.5" y="44" font-family="Arial Black, sans-serif" font-size="14" font-weight="900" fill="white">CS</text>
+  <text x="44" y="46" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#1B2A4A" letter-spacing="-0.3">CarShield</text>
+</svg>

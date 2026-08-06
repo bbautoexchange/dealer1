@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 80" width="260" height="80">
+  <rect width="260" height="80" fill="white"/>
+  <path d="M14,55 L30,20 L46,48 L62,20 L78,55" stroke="#00A651" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="90" y="50" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#1A1A2E" letter-spacing="-0.5">montway</text>
+</svg>

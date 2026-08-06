@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 80" width="220" height="80">
+  <rect width="220" height="80" fill="white"/>
+  <text x="12" y="52" font-family="Arial Black, Arial, sans-serif" font-size="42" font-weight="900" fill="#003087" letter-spacing="-1">CAR</text>
+  <text x="112" y="52" font-family="Arial Black, Arial, sans-serif" font-size="42" font-weight="900" fill="#0070D2" letter-spacing="-1">FAX</text>
+  <rect x="108" y="18" width="3" height="36" fill="#CCCCCC" opacity="0.5"/>
+</svg>

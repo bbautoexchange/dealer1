@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: retrodrive-usa
+    runtime: docker
+    plan: starter
+    region: oregon
+    healthCheckPath: /health
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    disk:
+      name: inventory-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+        value: "true"
+      - key: DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE
+        value: "false"
+      - key: Inventory__DatabasePath
+        value: /var/data/retrodrive.db
+      - key: Admin__Password
+        sync: false
+      - key: Admin__SessionSecret
+        generateValue: true
+      - key: Close__ApiKey
+        sync: false
+      - key: Close__StatusId
+        sync: false
+      - key: Cloudinary__CloudName
+        sync: false
