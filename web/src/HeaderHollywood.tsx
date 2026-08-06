@@ -28,7 +28,15 @@ export default function HeaderHollywood({ page, go }: Props) {
   }, [])
 
   useEffect(() => {
-    const updateScrolled = () => setScrolled(window.scrollY > 24)
+    const updateScrolled = () => {
+      const scrollY = window.scrollY
+
+      setScrolled((isCompact) => {
+        if (!isCompact && scrollY > 140) return true
+        if (isCompact && scrollY < 8) return false
+        return isCompact
+      })
+    }
 
     updateScrolled()
     window.addEventListener('scroll', updateScrolled, { passive: true })
