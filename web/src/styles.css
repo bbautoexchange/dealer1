@@ -188,3 +188,59 @@
 
 /* Unified custom select — replaces all browser-native dropdown menus. */
 .condition-picker { display: grid; gap: 8px; }.condition-picker > span { color: var(--amber); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }.retro-select { position: relative; width: 100%; }.retro-select-toggle { position: relative; width: 100%; min-height: 42px; border: 0; border-bottom: 1px solid #767d7c; padding: 8px 30px 8px 0; color: var(--paper); background: #202728; font-family: Barlow, Arial, sans-serif; font-size: 14px; text-align: left; cursor: pointer; }.retro-select-toggle::after { position: absolute; top: 50%; right: 8px; width: 7px; height: 7px; border-right: 2px solid var(--amber); border-bottom: 2px solid var(--amber); content: ''; transform: translateY(-70%) rotate(45deg); }.retro-select-toggle:hover, .retro-select-toggle:focus-visible { background: #27302f; outline: 1px solid rgba(232,165,57,.48); outline-offset: 2px; }.retro-select-options { position: absolute; z-index: 25; top: calc(100% + 6px); right: 0; left: 0; overflow: hidden; border: 1px solid rgba(232,165,57,.64); background: #202728; box-shadow: 0 16px 34px rgba(0,0,0,.42); }.retro-select-options button { display: block; width: 100%; min-height: 40px; border: 0; border-bottom: 1px solid rgba(241,238,230,.09); padding: 10px 14px; color: #dfe3df; background: transparent; font-family: Barlow, Arial, sans-serif; font-size: 14px; text-align: left; cursor: pointer; }.retro-select-options button:last-child { border-bottom: 0; }.retro-select-options button:hover, .retro-select-options button:focus-visible { color: #171a1a; background: #efb246; outline: none; }.retro-select-options button.selected { color: var(--amber); background: rgba(232,165,57,.12); }.retro-select-options button.selected:hover, .retro-select-options button.selected:focus-visible { color: #171a1a; background: #efb246; }
+/* Sticky header that contracts after the visitor begins scrolling. */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: box-shadow .24s ease;
+}
+
+.site-header .utility-bar,
+.site-header .main-nav,
+.site-header .garage-mark,
+.site-header .garage-mark small,
+.site-header .main-nav nav,
+.site-header .main-nav nav button,
+.site-header .header-phone,
+.site-header .header-cta {
+  transition: min-height .24s ease, max-height .24s ease, padding .24s ease, font-size .24s ease, gap .24s ease, opacity .18s ease, border-color .24s ease, top .24s ease;
+}
+
+@media (min-width: 761px) {
+  .site-header.scrolled {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .26);
+  }
+
+  .site-header.scrolled .utility-bar {
+    min-height: 0;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    border-bottom-color: transparent;
+  }
+
+  .site-header.scrolled .main-nav { min-height: 76px; }
+  .site-header.scrolled .garage-mark { font-size: 31px; }
+  .site-header.scrolled .garage-mark small { top: 28px; font-size: 6px; }
+  .site-header.scrolled .main-nav nav { gap: 28px; }
+  .site-header.scrolled .main-nav nav button { padding: 12px 0; font-size: 14px; }
+  .site-header.scrolled .main-nav nav button.active::after { bottom: 5px; }
+  .site-header.scrolled .header-actions { gap: 9px; }
+  .site-header.scrolled .header-phone { padding: 8px 10px; font-size: 13px; }
+  .site-header.scrolled .header-cta { padding: 8px 11px; font-size: 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .site-header .utility-bar,
+  .site-header .main-nav,
+  .site-header .garage-mark,
+  .site-header .garage-mark small,
+  .site-header .main-nav nav,
+  .site-header .main-nav nav button,
+  .site-header .header-phone,
+  .site-header .header-cta {
+    transition: none;
+  }
+}

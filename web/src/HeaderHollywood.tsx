@@ -18,6 +18,7 @@ export default function HeaderHollywood({ page, go }: Props) {
   const [phone, setPhone] = useState('')
   const [showroomHours, setShowroomHours] = useState('By appointment')
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
     void getSiteSettings().then((settings) => {
@@ -26,11 +27,19 @@ export default function HeaderHollywood({ page, go }: Props) {
     }).catch(() => undefined)
   }, [])
 
+  useEffect(() => {
+    const updateScrolled = () => setScrolled(window.scrollY > 24)
+
+    updateScrolled()
+    window.addEventListener('scroll', updateScrolled, { passive: true })
+    return () => window.removeEventListener('scroll', updateScrolled)
+  }, [])
+
   const active = (pages: Page[]) => pages.includes(page) ? 'active' : ''
   const callLink = phoneHref(phone)
   const navigate = (href: string) => { setMenuOpen(false); go(href) }
 
-  return <header className="site-header">
+  return <header className={`site-header${scrolled ? ' scrolled' : ''}`}>
     <div className="utility-bar"><div><span className="utility-dot" />Nationwide delivery</div><div title={showroomHours}><span className="utility-dot" />{showroomHours}</div><div className="utility-right"><span>Detailed vehicle information</span><span>Retro &amp; Classic Vehicles</span></div></div>
     <div className="main-nav wrap-wide">
       <button className="garage-mark" onClick={() => navigate('/')} aria-label="B & B Auto Exchange home"><span>B &amp; B</span> AUTO<small>EXCHANGE / RETRO &amp; CLASSIC VEHICLES</small></button>
