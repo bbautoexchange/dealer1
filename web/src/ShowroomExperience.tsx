@@ -11,7 +11,7 @@ export default function ShowroomExperience({ go }: Props) {
     <section className="showroom-story">
       <div className="wrap-wide showroom-story-grid">
         <div className="showroom-image-stack">
-          <img className="showroom-warehouse" src="/showroom/classic_warehouse.jpg" alt="Classic vehicles in a warehouse" />
+          <img className="showroom-warehouse" src="/showroom/vehicle-inspection-mustang.png" alt="Classic Ford Mustang prepared with vehicle documentation" />
           <div className="showroom-caption"><span>B &amp; B AUTO EXCHANGE</span><strong>THE COLLECTION,<br />IN CONTEXT.</strong></div>
         </div>
         <div className="showroom-story-copy">
