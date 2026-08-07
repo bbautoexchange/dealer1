@@ -3,7 +3,7 @@ type Props = { go: (href: string) => void }
 const gallery = [
   { src: '/showroom/showroom1.jpg', alt: 'Classic vehicle inside the B & B Auto Exchange showroom' },
   { src: '/showroom/showroom2.jpg', alt: 'B & B Auto Exchange showroom detail' },
-  { src: '/showroom/showroom3.jpg', alt: 'Classic car collection indoors' },
+  { src: '/showroom/showroom-collection-belair.png', alt: 'Classic Chevrolet Bel Air displayed in the collection hall' },
 ]
 
 export default function ShowroomExperience({ go }: Props) {
