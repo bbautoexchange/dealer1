@@ -137,6 +137,10 @@ export function createAdminVehicle(vehicle: AdminVehicleInput) {
   return adminRequest<AdminVehicle>('/api/admin/vehicles', { method: 'POST', body: JSON.stringify(vehicle) })
 }
 
+export function importAdminVehicles(vehicles: AdminVehicleInput[]) {
+  return adminRequest<AdminVehicle[]>('/api/admin/vehicles/import', { method: 'POST', body: JSON.stringify({ vehicles }) })
+}
+
 export function updateAdminVehicle(id: number, vehicle: AdminVehicleInput) {
   return adminRequest<AdminVehicle>(`/api/admin/vehicles/${id}`, { method: 'PUT', body: JSON.stringify(vehicle) })
 }

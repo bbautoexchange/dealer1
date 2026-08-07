@@ -106,6 +106,47 @@ public sealed partial class AdminController(
         }
     }
 
+    [HttpPost("vehicles/import")]
+    [ProducesResponseType<IReadOnlyList<AdminVehicleResponse>>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<IReadOnlyList<AdminVehicleResponse>>> ImportVehicles(
+        [FromBody] BulkImportVehiclesRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (!IsAuthorized()) return Unauthorized();
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+
+        var vehicles = new List<(Vehicle Vehicle, bool Published)>(request.Vehicles.Count);
+        foreach (var requestVehicle in request.Vehicles)
+        {
+            var vehicle = ValidateAndCreateVehicle(requestVehicle);
+            if (vehicle is not null) vehicles.Add((vehicle, requestVehicle.Published));
+        }
+
+        if (!ModelState.IsValid || vehicles.Count != request.Vehicles.Count) return ValidationProblem(ModelState);
+
+        var duplicateSlug = vehicles
+            .GroupBy(item => item.Vehicle.Slug, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault(group => group.Count() > 1)?.Key;
+        if (duplicateSlug is not null)
+        {
+            ModelState.AddModelError(nameof(request.Vehicles), $"The import contains the duplicate vehicle URL '{duplicateSlug}'.");
+            return ValidationProblem(ModelState);
+        }
+
+        try
+        {
+            var created = await inventory.CreateManyAsync(vehicles, cancellationToken);
+            return StatusCode(StatusCodes.Status201Created, created.Select(ToResponse).ToList());
+        }
+        catch (SqliteException exception) when (exception.SqliteErrorCode == 19)
+        {
+            return Problem(statusCode: StatusCodes.Status409Conflict, title: "One or more vehicle URLs already exist.", detail: "Adjust duplicate URL slugs, then import the file again. No vehicles were added.");
+        }
+    }
+
     [HttpPatch("vehicles/{id:long}/publication")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

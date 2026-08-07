@@ -110,6 +110,27 @@ public sealed class InventoryStore
         return new InventoryVehicle(id, vehicle, published, createdAt);
     }
 
+    public async Task<IReadOnlyList<InventoryVehicle>> CreateManyAsync(
+        IReadOnlyList<(Vehicle Vehicle, bool Published)> vehicles,
+        CancellationToken cancellationToken = default)
+    {
+        if (vehicles.Count == 0) return [];
+
+        await using var connection = await OpenAsync(cancellationToken);
+        await using var transaction = (SqliteTransaction)await connection.BeginTransactionAsync(cancellationToken);
+        var createdAt = DateTimeOffset.UtcNow;
+        var created = new List<InventoryVehicle>(vehicles.Count);
+
+        foreach (var (vehicle, published) in vehicles)
+        {
+            var id = await InsertAsync(connection, vehicle, published, createdAt, cancellationToken, transaction);
+            created.Add(new InventoryVehicle(id, vehicle, published, createdAt));
+        }
+
+        await transaction.CommitAsync(cancellationToken);
+        return created;
+    }
+
     public async Task<bool> SetPublishedAsync(long id, bool published, CancellationToken cancellationToken = default)
     {
         await using var connection = await OpenAsync(cancellationToken);
@@ -179,9 +200,11 @@ public sealed class InventoryStore
         Vehicle vehicle,
         bool published,
         DateTimeOffset createdAt,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        SqliteTransaction? transaction = null)
     {
         await using var command = connection.CreateCommand();
+        command.Transaction = transaction;
         command.CommandText = """
             INSERT INTO vehicles (
                 slug, year, make, model, price, price_text, msrp, mileage, vin, exterior_color, interior_color, engine,
