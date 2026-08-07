@@ -244,3 +244,6 @@
     transition: none;
   }
 }
+
+/* Trade-in enquiries should begin with a classic vehicle, not a modern sports car. */
+.trade-copy { background-image: url('/showroom/trade_in_retro.jpg'); }
