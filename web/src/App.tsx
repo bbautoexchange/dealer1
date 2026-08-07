@@ -8,7 +8,6 @@ import FinancePageHollywood from './FinancePageHollywood'
 import HeaderHollywood from './HeaderHollywood'
 import InventoryPage from './InventoryPage'
 import LegalPageHollywood from './LegalPage'
-import LiveAgentChat from './LiveAgentChat'
 import RetroSelect from './RetroSelect'
 import ShowroomExperience from './ShowroomExperience'
 import ShippingPlanner from './ShippingPlanner'
@@ -51,7 +50,6 @@ function App() {
     </main>
     <FooterHollywood go={go} />
     <FloatingPhoneButton />
-    <LiveAgentChat />
     <VehicleLightbox />
   </div>
 }

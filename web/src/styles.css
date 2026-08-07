@@ -186,7 +186,7 @@
   .floating-phone { right: 17px; bottom: max(17px, env(safe-area-inset-bottom)); width: 54px; height: 54px; }
 }
 
-/* Keep the call button clear of the LiveAgent chat bubble. */
+/* Keep the call button clear of the LiveChat bubble. */
 .floating-phone { bottom: 96px; }
 @media (max-width: 760px) { .floating-phone { bottom: max(92px, calc(env(safe-area-inset-bottom) + 76px)); } }
 
