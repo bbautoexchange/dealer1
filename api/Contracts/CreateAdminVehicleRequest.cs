@@ -28,31 +28,31 @@ public sealed class CreateAdminVehicleRequest
     [Range(0, 2000000)]
     public int Mileage { get; init; }
 
-    [Required, StringLength(80)]
+    [StringLength(80)]
     public string Vin { get; init; } = string.Empty;
 
-    [Required, StringLength(80)]
+    [StringLength(80)]
     public string ExteriorColor { get; init; } = string.Empty;
 
-    [Required, StringLength(80)]
+    [StringLength(80)]
     public string InteriorColor { get; init; } = string.Empty;
 
-    [Required, StringLength(120)]
+    [StringLength(120)]
     public string Engine { get; init; } = string.Empty;
 
-    [Required, StringLength(80)]
+    [StringLength(80)]
     public string Horsepower { get; init; } = string.Empty;
 
-    [Required, StringLength(120)]
+    [StringLength(120)]
     public string Transmission { get; init; } = string.Empty;
 
-    [Required, StringLength(80)]
+    [StringLength(80)]
     public string BodyStyle { get; init; } = string.Empty;
 
-    [Required, StringLength(160)]
+    [StringLength(160)]
     public string Location { get; init; } = string.Empty;
 
-    [Required, StringLength(80)]
+    [StringLength(80)]
     public string StockNumber { get; init; } = string.Empty;
 
     [Required, StringLength(5000)]

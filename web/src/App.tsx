@@ -90,9 +90,22 @@ function Inventory({ go }: { go: (href: string) => void }) {
   return <section className="inventory-page wrap-wide"><p className="garage-kicker">The showroom</p><h1>FIND A CAR<br /><em>THAT MOVES YOU.</em></h1><div className="inventory-filters"><label>Search inventory<input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Year, make, or model" /></label><label>Make<RetroSelect value={make} onChange={setMake} ariaLabel="Make" options={makes.map((item) => ({ value: item, label: item }))} /></label><span>{filtered.length} vehicle{filtered.length === 1 ? '' : 's'} available</span></div><div className="vehicle-grid dark-cards inventory-grid">{filtered.map((vehicle, index) => <VehicleCard key={vehicle.slug} vehicle={vehicle} number={index + 1} go={go} />)}</div>{filtered.length === 0 && <p className="empty-state">No matching cars right now. Adjust the search or contact us about sourcing one.</p>}</section>
 }
 
-function VehicleCard({ vehicle, number: order, go }: { vehicle: VehicleSummary; number: number; go: (href: string) => void }) { return <article className="vehicle-card"><button className="vehicle-image" onClick={() => go(`/inventory/${vehicle.slug}`)} aria-label={`View ${vehicle.year} ${vehicle.make} ${vehicle.model}`}><img src={vehicle.imageUrl} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} /><span>{String(order).padStart(2, '0')}</span><b>Verified & inspected</b></button><div className="vehicle-info"><div><p className="vehicle-year">{vehicle.year} · {vehicle.make}</p><h3>{vehicle.model}</h3><p className="vehicle-spec">{number.format(vehicle.mileage)} mi · {vehicle.exteriorColor}</p></div><div className="vehicle-price">{vehicle.msrp && <s>{money.format(vehicle.msrp)}</s>}<strong>{displayPrice(vehicle.price, vehicle.priceText)}</strong></div></div><button className="card-link" onClick={() => go(`/inventory/${vehicle.slug}`)}>View vehicle <span>→</span></button></article> }
+function LegacyVehicleCard({ vehicle, number: order, go }: { vehicle: VehicleSummary; number: number; go: (href: string) => void }) { return <article className="vehicle-card"><button className="vehicle-image" onClick={() => go(`/inventory/${vehicle.slug}`)} aria-label={`View ${vehicle.year} ${vehicle.make} ${vehicle.model}`}><img src={vehicle.imageUrl} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} /><span>{String(order).padStart(2, '0')}</span><b>Verified & inspected</b></button><div className="vehicle-info"><div><p className="vehicle-year">{vehicle.year} · {vehicle.make}</p><h3>{vehicle.model}</h3><p className="vehicle-spec">{number.format(vehicle.mileage)} mi · {vehicle.exteriorColor}</p></div><div className="vehicle-price">{vehicle.msrp && <s>{money.format(vehicle.msrp)}</s>}<strong>{displayPrice(vehicle.price, vehicle.priceText)}</strong></div></div><button className="card-link" onClick={() => go(`/inventory/${vehicle.slug}`)}>View vehicle <span>→</span></button></article> }
 
-function VehicleDetail({ slug, go }: { slug: string; go: (href: string) => void }) {
+function VehicleCard({ vehicle, number: order, go }: { vehicle: VehicleSummary; number: number; go: (href: string) => void }) {
+  const cardSpecs = [
+    vehicle.mileage > 0 ? `${number.format(vehicle.mileage)} mi` : '',
+    vehicle.exteriorColor.trim(),
+  ].filter(Boolean).join(' · ')
+
+  return <article className="vehicle-card">
+    <button className="vehicle-image" onClick={() => go(`/inventory/${vehicle.slug}`)} aria-label={`View ${vehicle.year} ${vehicle.make} ${vehicle.model}`}><img src={vehicle.imageUrl} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} /><span>{String(order).padStart(2, '0')}</span><b>Verified & inspected</b></button>
+    <div className="vehicle-info"><div><p className="vehicle-year">{vehicle.year} · {vehicle.make}</p><h3>{vehicle.model}</h3>{cardSpecs && <p className="vehicle-spec">{cardSpecs}</p>}</div><div className="vehicle-price">{vehicle.msrp && vehicle.msrp > 0 ? <s>{money.format(vehicle.msrp)}</s> : null}<strong>{displayPrice(vehicle.price, vehicle.priceText)}</strong></div></div>
+    <button className="card-link" onClick={() => go(`/inventory/${vehicle.slug}`)}>View vehicle <span>→</span></button>
+  </article>
+}
+
+function LegacyVehicleDetail({ slug, go }: { slug: string; go: (href: string) => void }) {
   const [vehicle, setVehicle] = useState<Vehicle | null>(null); const [error, setError] = useState(''); const [activeImage, setActiveImage] = useState(0); const [saved, setSaved] = useState(false); const [notice, setNotice] = useState(''); const [faq, setFaq] = useState<number | null>(null)
   useEffect(() => { setVehicle(null); setError(''); setActiveImage(0); void getVehicle(slug).then((value) => { setVehicle(value); setSaved(localStorage.getItem(`retrodrive-save-${value.slug}`) === 'saved') }).catch((reason: Error) => setError(reason.message)) }, [slug])
   const share = async () => { try { await navigator.clipboard.writeText(window.location.href); setNotice('Vehicle link copied.') } catch { setNotice('Copy this page URL from your browser to share the vehicle.') } }
@@ -101,6 +114,119 @@ function VehicleDetail({ slug, go }: { slug: string; go: (href: string) => void 
   if (!vehicle) return <section className="detail-loading wrap-wide" aria-live="polite">Loading the vehicle…</section>
   const faqs = [['What is the vehicle condition?', 'We can provide the current condition summary, recent service details, and additional walk-around media before you decide.'], ['Can I finance this vehicle?', 'Yes. Use the finance planner to estimate a payment and send a pre-approval request tied to this vehicle.'], ['Can you deliver it?', 'Yes. We coordinate insured enclosed transport nationwide and can quote the route to your driveway.']]
   return <section className="vehicle-detail wrap-wide"><button className="back-link" onClick={() => go('/inventory')}>← Back to showroom</button><div className="detail-heading"><div><p className="garage-kicker">Classic · Verified & inspected</p><h1>{vehicle.year} {vehicle.make}<br /><em>{vehicle.model}</em></h1><p className="stock">Stock {vehicle.stockNumber} · {vehicle.location}</p></div><div className="detail-price">{vehicle.msrp && <s>MSRP {money.format(vehicle.msrp)}</s>}<strong>{displayPrice(vehicle.price, vehicle.priceText)}</strong></div></div><div className="vehicle-toolbar"><button onClick={toggleSave}>{saved ? '✓ Saved' : '♡ Save'}</button><button onClick={() => void share()}>↗ Share</button><button onClick={() => window.print()}>Print</button>{notice && <span role="status">{notice}</span>}</div><div className="detail-layout"><div className="gallery"><div className="main-image"><img src={vehicle.imageUrls[activeImage] ?? vehicle.imageUrl} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} /></div><div className="thumbnails">{vehicle.imageUrls.map((url, index) => <button className={index === activeImage ? 'selected' : ''} onClick={() => setActiveImage(index)} key={url} aria-label={`Show photo ${index + 1}`}><img src={url} alt="" /></button>)}</div></div><aside className="specs"><p>{vehicle.description}</p><dl><div><dt>VIN</dt><dd>{vehicle.vin}</dd></div><div><dt>Stock</dt><dd>{vehicle.stockNumber}</dd></div><div><dt>Mileage</dt><dd>{number.format(vehicle.mileage)} mi</dd></div><div><dt>Engine</dt><dd>{vehicle.engine}</dd></div><div><dt>Power</dt><dd>{vehicle.horsepower}</dd></div><div><dt>Transmission</dt><dd>{vehicle.transmission}</dd></div><div><dt>Exterior / interior</dt><dd>{vehicle.exteriorColor} / {vehicle.interiorColor}</dd></div></dl><div className="detail-actions"><button className="amber-button" onClick={() => document.getElementById('inquire')?.scrollIntoView({ behavior: 'smooth' })}>Check availability <span>→</span></button><button className="ghost-button" onClick={() => go(`/financing?vehicle=${encodeURIComponent(vehicle.slug)}&price=${vehicle.price}`)}>Apply for financing</button><button className="ghost-button" onClick={() => go(`/shipping?vehicle=${encodeURIComponent(vehicle.slug)}`)}>Plan delivery</button></div></aside></div><section className="vehicle-highlights"><div><p className="garage-kicker">Vehicle file</p><h2>THE DETAILS<br /><em>MATTER.</em></h2></div><div><h3>Features & highlights</h3><ul>{vehicle.features.map((feature) => <li key={feature}>✓ {feature}</li>)}</ul><h3>Included with every vehicle</h3><p>Condition notes, title/status confirmation, purchase guidance, and delivery planning support.</p></div></section><section className="vehicle-faq"><p className="garage-kicker">Questions, answered</p><h2>BUY WITH<br /><em>CONFIDENCE.</em></h2>{faqs.map(([question, answer], index) => <button className="faq-row" key={question} onClick={() => setFaq(faq === index ? null : index)}><span>{question}</span><b>{faq === index ? '−' : '+'}</b>{faq === index && <p>{answer}</p>}</button>)}</section><InquiryForm vehicle={vehicle} /></section>
+}
+
+function VehicleDetail({ slug, go }: { slug: string; go: (href: string) => void }) {
+  const [vehicle, setVehicle] = useState<Vehicle | null>(null)
+  const [error, setError] = useState('')
+  const [activeImage, setActiveImage] = useState(0)
+  const [saved, setSaved] = useState(false)
+  const [notice, setNotice] = useState('')
+  const [faq, setFaq] = useState<number | null>(null)
+
+  useEffect(() => {
+    setVehicle(null)
+    setError('')
+    setActiveImage(0)
+    void getVehicle(slug)
+      .then((value) => {
+        setVehicle(value)
+        setSaved(localStorage.getItem(`retrodrive-save-${value.slug}`) === 'saved')
+      })
+      .catch((reason: Error) => setError(reason.message))
+  }, [slug])
+
+  const share = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href)
+      setNotice('Vehicle link copied.')
+    } catch {
+      setNotice('Copy this page URL from your browser to share the vehicle.')
+    }
+  }
+
+  const toggleSave = () => {
+    if (!vehicle) return
+    const next = !saved
+    setSaved(next)
+    localStorage.setItem(`retrodrive-save-${vehicle.slug}`, next ? 'saved' : '')
+    setNotice(next ? 'Saved to this device.' : 'Removed from saved vehicles.')
+  }
+
+  if (error) return <section className="not-found wrap-wide"><p className="garage-kicker">Not available</p><h1>THIS ONE FOUND<br /><em>ANOTHER DRIVEWAY.</em></h1><button className="amber-button" onClick={() => go('/inventory')}>Back to inventory</button></section>
+  if (!vehicle) return <section className="detail-loading wrap-wide" aria-live="polite">Loading the vehicle…</section>
+
+  const meta = [
+    vehicle.stockNumber.trim() ? `Stock ${vehicle.stockNumber.trim()}` : '',
+    vehicle.location.trim(),
+  ].filter(Boolean).join(' · ')
+  const specs = ([
+    ['Year', String(vehicle.year)],
+    ['Make', vehicle.make.trim()],
+    ['Model', vehicle.model.trim()],
+    ['Asking price', displayPrice(vehicle.price, vehicle.priceText)],
+    ['MSRP / reference price', vehicle.msrp && vehicle.msrp > 0 ? money.format(vehicle.msrp) : ''],
+    ['Mileage', vehicle.mileage > 0 ? `${number.format(vehicle.mileage)} mi` : ''],
+    ['VIN', vehicle.vin.trim() || 'On request'],
+    ['Stock number', vehicle.stockNumber.trim()],
+    ['Exterior color', vehicle.exteriorColor.trim()],
+    ['Interior color', vehicle.interiorColor.trim()],
+    ['Engine', vehicle.engine.trim()],
+    ['Horsepower', vehicle.horsepower.trim()],
+    ['Transmission', vehicle.transmission.trim()],
+    ['Body style', vehicle.bodyStyle.trim()],
+    ['Vehicle location', vehicle.location.trim()],
+  ] as Array<[string, string]>).filter(([, value]) => value.length > 0)
+  const faqs = [
+    ['What is the vehicle condition?', 'We can provide the current condition summary, recent service details, and additional walk-around media before you decide.'],
+    ['Can I finance this vehicle?', 'Yes. Use the finance planner to estimate a payment and send a pre-approval request tied to this vehicle.'],
+    ['Can you deliver it?', 'Yes. We coordinate insured enclosed transport nationwide and can quote the route to your driveway.'],
+  ]
+
+  return <section className="vehicle-detail wrap-wide">
+    <button className="back-link" onClick={() => go('/inventory')}>← Back to showroom</button>
+    <div className="detail-heading">
+      <div>
+        <p className="garage-kicker">Classic · Verified &amp; inspected</p>
+        <h1>{vehicle.year} {vehicle.make}<br /><em>{vehicle.model}</em></h1>
+        {meta && <p className="stock">{meta}</p>}
+      </div>
+      <div className="detail-price">{vehicle.msrp && vehicle.msrp > 0 ? <s>MSRP {money.format(vehicle.msrp)}</s> : null}<strong>{displayPrice(vehicle.price, vehicle.priceText)}</strong></div>
+    </div>
+    <div className="vehicle-toolbar">
+      <button onClick={toggleSave}>{saved ? '✓ Saved' : '♡ Save'}</button>
+      <button onClick={() => void share()}>↗ Share</button>
+      <button onClick={() => window.print()}>Print</button>
+      {notice && <span role="status">{notice}</span>}
+    </div>
+    <div className="detail-layout">
+      <div className="gallery">
+        <div className="main-image"><img src={vehicle.imageUrls[activeImage] ?? vehicle.imageUrl} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} /></div>
+        <div className="thumbnails">{vehicle.imageUrls.map((url, index) => <button className={index === activeImage ? 'selected' : ''} onClick={() => setActiveImage(index)} key={url} aria-label={`Show photo ${index + 1}`}><img src={url} alt="" /></button>)}</div>
+      </div>
+      <aside className="specs">
+        <p>{vehicle.description}</p>
+        <dl>{specs.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+        <div className="detail-actions">
+          <button className="amber-button" onClick={() => document.getElementById('inquire')?.scrollIntoView({ behavior: 'smooth' })}>Check availability <span>→</span></button>
+          <button className="ghost-button" onClick={() => go(`/financing?vehicle=${encodeURIComponent(vehicle.slug)}&price=${vehicle.price}`)}>Apply for financing</button>
+          <button className="ghost-button" onClick={() => go(`/shipping?vehicle=${encodeURIComponent(vehicle.slug)}`)}>Plan delivery</button>
+        </div>
+      </aside>
+    </div>
+    <section className="vehicle-highlights">
+      <div><p className="garage-kicker">Vehicle file</p><h2>THE DETAILS<br /><em>MATTER.</em></h2></div>
+      <div>
+        {vehicle.features.length > 0 && <><h3>Features &amp; highlights</h3><ul>{vehicle.features.map((feature) => <li key={feature}>✓ {feature}</li>)}</ul></>}
+        <h3>Included with every vehicle</h3><p>Condition notes, title/status confirmation, purchase guidance, and delivery planning support.</p>
+      </div>
+    </section>
+    <section className="vehicle-faq">
+      <p className="garage-kicker">Questions, answered</p><h2>BUY WITH<br /><em>CONFIDENCE.</em></h2>
+      {faqs.map(([question, answer], index) => <button className="faq-row" key={question} onClick={() => setFaq(faq === index ? null : index)}><span>{question}</span><b>{faq === index ? '−' : '+'}</b>{faq === index && <p>{answer}</p>}</button>)}
+    </section>
+    <InquiryForm vehicle={vehicle} />
+  </section>
 }
 
 function InquiryForm({ vehicle }: { vehicle: Vehicle }) {

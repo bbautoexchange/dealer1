@@ -247,3 +247,13 @@
 
 /* Trade-in enquiries should begin with a classic vehicle, not a modern sports car. */
 .trade-copy { background-image: url('/showroom/trade_in_retro.jpg'); }
+
+/* Optional vehicle specs reflow cleanly when individual fields are omitted. */
+.vehicle-detail .specs dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
+.vehicle-detail .specs dl > div { display: block; }
+.vehicle-detail .specs dl dt { margin-bottom: 8px; }
+.vehicle-detail .specs dl dd { text-align: left; }
+
+@media (max-width: 800px) {
+  .vehicle-detail .specs dl { grid-template-columns: 1fr; }
+}

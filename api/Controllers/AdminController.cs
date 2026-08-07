@@ -166,15 +166,6 @@ public sealed partial class AdminController(
         {
             [nameof(request.Make)] = request.Make,
             [nameof(request.Model)] = request.Model,
-            [nameof(request.Vin)] = request.Vin,
-            [nameof(request.ExteriorColor)] = request.ExteriorColor,
-            [nameof(request.InteriorColor)] = request.InteriorColor,
-            [nameof(request.Engine)] = request.Engine,
-            [nameof(request.Horsepower)] = request.Horsepower,
-            [nameof(request.Transmission)] = request.Transmission,
-            [nameof(request.BodyStyle)] = request.BodyStyle,
-            [nameof(request.Location)] = request.Location,
-            [nameof(request.StockNumber)] = request.StockNumber,
             [nameof(request.Description)] = request.Description
         };
         foreach (var (field, value) in required.Where(pair => string.IsNullOrWhiteSpace(pair.Value)))
