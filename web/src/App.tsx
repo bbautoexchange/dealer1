@@ -97,7 +97,7 @@ function VehicleCard({ vehicle, number: order, go }: { vehicle: VehicleSummary; 
   ].filter(Boolean).join(' · ')
 
   return <article className="vehicle-card">
-    <button className="vehicle-image" onClick={() => go(`/inventory/${vehicle.slug}`)} aria-label={`View ${vehicle.year} ${vehicle.make} ${vehicle.model}`}><img src={vehicle.imageUrl} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} /><span>{String(order).padStart(2, '0')}</span><b>Verified & inspected</b></button>
+    <button className="vehicle-image" onClick={() => go(`/inventory/${vehicle.slug}`)} aria-label={`View ${vehicle.year} ${vehicle.make} ${vehicle.model}`}><img src={vehicle.imageUrl} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} loading="lazy" decoding="async" /><span>{String(order).padStart(2, '0')}</span><b>Verified & inspected</b></button>
     <div className="vehicle-info"><div><p className="vehicle-year">{vehicle.year} · {vehicle.make}</p><h3>{vehicle.model}</h3>{cardSpecs && <p className="vehicle-spec">{cardSpecs}</p>}</div><div className="vehicle-price">{vehicle.msrp && vehicle.msrp > 0 ? <s>{money.format(vehicle.msrp)}</s> : null}<strong>{displayPrice(vehicle.price, vehicle.priceText)}</strong></div></div>
     <button className="card-link" onClick={() => go(`/inventory/${vehicle.slug}`)}>View vehicle <span>→</span></button>
   </article>
@@ -199,8 +199,8 @@ function VehicleDetail({ slug, go }: { slug: string; go: (href: string) => void 
     </div>
     <div className="detail-layout">
       <div className="gallery">
-        <div className="main-image"><img src={vehicle.imageUrls[activeImage] ?? vehicle.imageUrl} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} /></div>
-        <div className="thumbnails">{vehicle.imageUrls.map((url, index) => <button className={index === activeImage ? 'selected' : ''} onClick={() => setActiveImage(index)} key={url} aria-label={`Show photo ${index + 1}`}><img src={url} alt="" /></button>)}</div>
+        <div className="main-image"><img src={vehicle.imageUrls[activeImage] ?? vehicle.imageUrl} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} decoding="async" /></div>
+        <div className="thumbnails">{vehicle.imageUrls.map((url, index) => <button className={index === activeImage ? 'selected' : ''} onClick={() => setActiveImage(index)} key={url} aria-label={`Show photo ${index + 1}`}><img src={url} alt="" loading="lazy" decoding="async" /></button>)}</div>
       </div>
       <aside className="specs">
         <p>{vehicle.description}</p>

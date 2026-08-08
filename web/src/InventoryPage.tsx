@@ -88,7 +88,7 @@ export default function InventoryPage({ go }: Props) {
 
 function InventoryVehicleCard({ vehicle, number: order, saved, onSave, go }: { vehicle: VehicleSummary; number: number; saved: boolean; onSave: () => void; go: Props['go'] }) {
   return <article className="vehicle-card inventory-vehicle-card">
-    <button className="vehicle-image" onClick={() => go(`/inventory/${vehicle.slug}`)} aria-label={`View ${vehicle.year} ${vehicle.make} ${vehicle.model}`}><img src={vehicle.imageUrl} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} /><span>{String(order).padStart(2, '0')}</span><b>Verified & inspected</b></button>
+    <button className="vehicle-image" onClick={() => go(`/inventory/${vehicle.slug}`)} aria-label={`View ${vehicle.year} ${vehicle.make} ${vehicle.model}`}><img src={vehicle.imageUrl} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} loading="lazy" decoding="async" /><span>{String(order).padStart(2, '0')}</span><b>Verified & inspected</b></button>
     <button className={`vehicle-save-button ${saved ? 'saved' : ''}`} type="button" onClick={onSave} aria-pressed={saved}>{saved ? '♥ Saved' : '♡ Save'}</button>
     <div className="vehicle-info"><div><p className="vehicle-year">{vehicle.year} · {vehicle.make}</p><h3>{vehicle.model}</h3><p className="vehicle-spec">{number.format(vehicle.mileage)} mi · {vehicle.exteriorColor}</p></div><div className="vehicle-price">{vehicle.msrp && <s>{money.format(vehicle.msrp)}</s>}<strong>{displayPrice(vehicle.price, vehicle.priceText)}</strong></div></div>
     <button className="card-link" onClick={() => go(`/inventory/${vehicle.slug}`)}>View vehicle <span>→</span></button>

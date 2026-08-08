@@ -3,7 +3,7 @@ type Props = { go: (href: string) => void }
 const gallery = [
   { src: '/showroom/showroom1.jpg', alt: 'Classic vehicle inside the B & B Auto Exchange showroom' },
   { src: '/showroom/showroom2.jpg', alt: 'B & B Auto Exchange showroom detail' },
-  { src: '/showroom/showroom-collection-belair.png', alt: 'Classic Chevrolet Bel Air displayed in the collection hall' },
+  { src: '/showroom/showroom-collection-belair.jpg', alt: 'Classic Chevrolet Bel Air displayed in the collection hall' },
 ]
 
 export default function ShowroomExperience({ go }: Props) {
@@ -11,7 +11,7 @@ export default function ShowroomExperience({ go }: Props) {
     <section className="showroom-story">
       <div className="wrap-wide showroom-story-grid">
         <div className="showroom-image-stack">
-          <img className="showroom-warehouse" src="/showroom/vehicle-inspection-mustang.png" alt="Classic Ford Mustang prepared with vehicle documentation" />
+          <img className="showroom-warehouse" src="/showroom/vehicle-inspection-mustang.jpg" alt="Classic Ford Mustang prepared with vehicle documentation" loading="lazy" decoding="async" />
           <div className="showroom-caption"><span>B &amp; B AUTO EXCHANGE</span><strong>THE COLLECTION,<br />IN CONTEXT.</strong></div>
         </div>
         <div className="showroom-story-copy">
@@ -30,7 +30,7 @@ export default function ShowroomExperience({ go }: Props) {
 
     <section className="showroom-tour wrap-wide">
       <div className="showroom-tour-heading"><div><p className="garage-kicker">Inside B &amp; B</p><h2>TAKE A LOOK<br /><em>AROUND.</em></h2></div><p>Classic-car buying starts with the atmosphere, then earns your confidence through the details.</p></div>
-      <div className="showroom-tour-grid">{gallery.map((image, index) => <figure key={image.src}><img src={image.src} alt={image.alt} loading="lazy" /><figcaption><span>0{index + 1}</span>{index === 0 ? 'Cars with character' : index === 1 ? 'Details worth seeing' : 'A collection in motion'}</figcaption></figure>)}</div>
+      <div className="showroom-tour-grid">{gallery.map((image, index) => <figure key={image.src}><img src={image.src} alt={image.alt} loading="lazy" decoding="async" /><figcaption><span>0{index + 1}</span>{index === 0 ? 'Cars with character' : index === 1 ? 'Details worth seeing' : 'A collection in motion'}</figcaption></figure>)}</div>
     </section>
 
     <section className="buyer-tools">
