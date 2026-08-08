@@ -269,6 +269,13 @@
 .shipping-continue span { margin-left: 15px; font-size: 21px; vertical-align: -1px; }
 .shipping-quote:focus { outline: none; }
 
+/* A compact confidence marker on every vehicle detail page. */
+.vehicle-buyback { display: grid; grid-template-columns: auto 1fr; gap: 15px; align-items: center; margin-top: 24px; padding: 16px 17px; border: 1px solid rgba(217,155,53,.55); border-left: 3px solid var(--amber); background: rgba(217,155,53,.08); }
+.vehicle-buyback > span { color: var(--amber); font-family: 'Barlow Condensed', sans-serif; font-size: 48px; font-weight: 800; line-height: .8; letter-spacing: -.04em; }
+.vehicle-buyback p { margin: 0 0 3px; color: var(--amber); font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.vehicle-buyback strong { display: block; color: var(--paper); font-family: 'Barlow Condensed', sans-serif; font-size: 23px; line-height: .84; letter-spacing: .01em; }
+.vehicle-buyback small { display: block; max-width: 260px; margin-top: 8px; color: #b8bfbb; font-size: 10px; line-height: 1.42; }
+
 /* A transport promise section that reinforces the care behind every route. */
 .shipping-protection { padding: 0 0 104px; }
 .shipping-protection-inner { padding: 52px 56px 0; overflow: hidden; border-top: 3px solid var(--amber); color: var(--paper); background: #252e2d; box-shadow: 0 18px 42px rgba(28,34,33,.15); }

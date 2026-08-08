@@ -205,6 +205,7 @@ function VehicleDetail({ slug, go }: { slug: string; go: (href: string) => void 
       <aside className="specs">
         <p>{vehicle.description}</p>
         <dl>{specs.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+        <div className="vehicle-buyback"><span>30</span><div><p>Business days</p><strong>BUYBACK<br />GUARANTEE</strong><small>Buy with confidence. Ask the B &amp; B team for complete guarantee terms.</small></div></div>
         <div className="detail-actions">
           <button className="amber-button" onClick={() => document.getElementById('inquire')?.scrollIntoView({ behavior: 'smooth' })}>Check availability <span>→</span></button>
           <button className="ghost-button" onClick={() => go(`/financing?vehicle=${encodeURIComponent(vehicle.slug)}&price=${vehicle.price}`)}>Apply for financing</button>
