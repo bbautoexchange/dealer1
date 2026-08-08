@@ -269,6 +269,10 @@
 .shipping-continue span { margin-left: 15px; font-size: 21px; vertical-align: -1px; }
 .shipping-quote:focus { outline: none; }
 
+/* Keep Leaflet panes and controls below the persistent site navigation. */
+.site-header { z-index: 1000; }
+.shipping-map-container { position: relative; z-index: 0; isolation: isolate; }
+
 /* A compact confidence marker on every vehicle detail page. */
 .vehicle-buyback { display: grid; grid-template-columns: auto 1fr; gap: 15px; align-items: center; margin-top: 24px; padding: 16px 17px; border: 1px solid rgba(217,155,53,.55); border-left: 3px solid var(--amber); background: rgba(217,155,53,.08); }
 .vehicle-buyback > span { color: var(--amber); font-family: 'Barlow Condensed', sans-serif; font-size: 48px; font-weight: 800; line-height: .8; letter-spacing: -.04em; }
