@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { getShippingPickup } from './api'
+import type { FormEvent } from 'react'
+import { getShippingPickup, submitDelivery } from './api'
 
 type Props = { go: (href: string) => void }
 type Service = 'standard' | 'priority' | 'express'
@@ -29,6 +30,7 @@ export default function ShippingPlanner({ go }: Props) {
   const originMarker = useRef<any>(null)
   const destinationMarker = useRef<any>(null)
   const routeLine = useRef<any>(null)
+  const requestForm = useRef<HTMLElement>(null)
   const originRef = useRef<Point | null>(null)
   const [origin, setOrigin] = useState<Point | null>(null)
   const [destination, setDestination] = useState<Point | null>(null)
@@ -37,6 +39,9 @@ export default function ShippingPlanner({ go }: Props) {
   const [routeStatus, setRouteStatus] = useState('Loading the fixed pickup location…')
   const [routeBusy, setRouteBusy] = useState(false)
   const [service, setService] = useState<Service>('standard')
+  const [requestOpen, setRequestOpen] = useState(false)
+  const [contact, setContact] = useState({ firstName: '', lastName: '', email: '', phone: '' })
+  const [requestStatus, setRequestStatus] = useState<{ type: 'idle' | 'sending' | 'success' | 'error'; message: string }>({ type: 'idle', message: '' })
   const miles = useMemo(() => Math.round(distanceKm * 0.621371), [distanceKm])
   const priceFor = (option: Service) => Math.round(distanceKm * 0.7 * serviceDetails[option].multiplier / 25) * 25
   const calculated = Boolean(origin && destination && distanceKm > 0)
@@ -104,6 +109,8 @@ export default function ShippingPlanner({ go }: Props) {
     if (!map || !L || !pickup) return
     if (destinationMarker.current) map.removeLayer(destinationMarker.current)
     destinationMarker.current = L.marker([point.lat, point.lng], { icon: iconFor('destination') }).addTo(map).bindPopup(`<strong>Delivery destination</strong><br>${point.label}`)
+    setRequestOpen(false)
+    setRequestStatus({ type: 'idle', message: '' })
     setDestination(point)
     await drawRoute(pickup, point)
   }
@@ -116,6 +123,8 @@ export default function ShippingPlanner({ go }: Props) {
     clearRouteLine()
     setDestination(null)
     setDistanceKm(0)
+    setRequestOpen(false)
+    setRequestStatus({ type: 'idle', message: '' })
     setRouteStatus('Pickup remains fixed. Click the map to place a new delivery destination.')
     if (originRef.current) map.setView([originRef.current.lat, originRef.current.lng], 5)
   }
@@ -158,6 +167,32 @@ export default function ShippingPlanner({ go }: Props) {
     }
   }
 
+  const continueToRequest = () => {
+    if (!calculated || !destination) return
+    setRequestOpen(true)
+    window.requestAnimationFrame(() => requestForm.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+  }
+
+  const updateContact = (field: keyof typeof contact, value: string) => setContact((current) => ({ ...current, [field]: value }))
+
+  const submitRequest = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!destination || !calculated) return
+    setRequestStatus({ type: 'sending', message: 'Sending your delivery request…' })
+    try {
+      const message = await submitDelivery({
+        ...contact,
+        destination: destination.label,
+        distanceMiles: miles,
+        vehicle: `${serviceDetails[service].label} · ${money.format(priceFor(service))} starting estimate`,
+        pageUrl: window.location.href,
+      })
+      setRequestStatus({ type: 'success', message })
+    } catch (reason) {
+      setRequestStatus({ type: 'error', message: reason instanceof Error ? reason.message : 'Please try again in a moment.' })
+    }
+  }
+
   return <main className="hollywood-shipping">
     <section className="shipping-hero wrap-wide"><div><p className="garage-kicker">Classic vehicle transport</p><h1>INTERACTIVE<br /><em>DELIVERY ESTIMATOR.</em></h1></div><p>Your pickup location is set by B & B Auto Exchange. Place the delivery destination on the map to calculate a driving route, distance, and starting transport estimate.</p></section>
     <section className="shipping-route wrap-wide">
@@ -165,6 +200,8 @@ export default function ShippingPlanner({ go }: Props) {
       <div className="shipping-route-panel"><p className="garage-kicker">Plan your transport route</p><h2>SET THE<br /><em>DESTINATION.</em></h2><div className="shipping-fixed-pickup"><span>Fixed pickup</span><strong>{origin?.label ?? 'Loading location…'}</strong></div><label>Destination address or ZIP<input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="e.g. Seattle, WA or 90210" onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); void searchAddress() } }} /></label><button className="shipping-calculate" type="button" onClick={() => void searchAddress()} disabled={routeBusy || !search.trim()}>{routeBusy ? 'Calculating…' : 'Find & calculate'} <span>→</span></button><p className="shipping-route-note">{routeStatus}</p><div className="shipping-point-summary"><span>01</span><strong>{origin ? 'B & B Auto Exchange pickup location' : 'Loading pickup location'}</strong><span>02</span><strong>{destination ? 'Destination set' : 'Choose destination'}</strong></div><button className="shipping-reset" type="button" onClick={resetPoints}>Reset destination</button></div>
     </section>
     {calculated && <section className="shipping-results wrap-wide" aria-live="polite"><header><p className="garage-kicker">Route calculated</p><h2>{number.format(miles)} MILES</h2><p>From {origin?.label} to {destination?.label}. Choose the transport option that fits your delivery timeline.</p></header><div className="shipping-tiers">{(Object.keys(serviceDetails) as Service[]).map((option) => <button className={`shipping-tier ${service === option ? 'selected' : ''}`} key={option} type="button" onClick={() => setService(option)}>{option === 'priority' && <b>Most requested</b>}<span className="tier-number">{serviceDetails[option].order}</span><span className="tier-copy"><strong>{serviceDetails[option].label}</strong><small>{serviceDetails[option].timing}</small><i>{serviceDetails[option].summary}</i></span><span className="tier-price">{money.format(priceFor(option))}<small>starting estimate</small></span></button>)}</div></section>}
+    {calculated && <div className="shipping-continue-wrap wrap-wide"><button className="shipping-continue" type="button" onClick={continueToRequest}>Continue <span>→</span></button></div>}
+    {requestOpen && calculated && destination && <section className="shipping-quote wrap-wide" ref={requestForm} tabIndex={-1}><div><p className="garage-kicker">Step 2 of 2</p><h2>REQUEST YOUR<br /><em>DELIVERY QUOTE.</em></h2><p>Share your details and the B & B team will confirm carrier availability, timing, and the final transport price for your route.</p></div><form className="shipping-contact-form" onSubmit={submitRequest}><div className="shipping-request-summary"><span>Selected route</span><strong>{origin?.label} → {destination.label}</strong><small>{number.format(miles)} miles · {serviceDetails[service].label} · Starting estimate {money.format(priceFor(service))}</small></div><div className="form-row"><label>First name<input required autoComplete="given-name" value={contact.firstName} onChange={(event) => updateContact('firstName', event.target.value)} /></label><label>Last name<input required autoComplete="family-name" value={contact.lastName} onChange={(event) => updateContact('lastName', event.target.value)} /></label></div><div className="form-row"><label>Email<input required type="email" autoComplete="email" value={contact.email} onChange={(event) => updateContact('email', event.target.value)} /></label><label>Phone<input required type="tel" autoComplete="tel" value={contact.phone} onChange={(event) => updateContact('phone', event.target.value)} /></label></div><button className="amber-button" disabled={requestStatus.type === 'sending'}>{requestStatus.type === 'sending' ? 'Sending…' : 'Request delivery quote'} <span>→</span></button>{requestStatus.type !== 'idle' && <p className={`form-status ${requestStatus.type}`} role="status">{requestStatus.message}</p>}</form></section>}
     <section className="shipping-process wrap-wide"><header><p className="garage-kicker">How delivery works</p><h2>FROM OUR FLOOR<br /><em>TO YOUR DOOR.</em></h2></header><div className="shipping-process-grid"><article><span>01</span><h3>Reserve your vehicle</h3><p>Choose your vehicle and request the delivery route that fits your timeline.</p></article><article><span>02</span><h3>Inspect & prepare</h3><p>We confirm the details needed to coordinate a protected carrier pickup.</p></article><article><span>03</span><h3>Insured transport</h3><p>Your vehicle travels in a covered carrier with delivery updates along the way.</p></article><article><span>04</span><h3>White-glove handoff</h3><p>Delivery details are confirmed with you before the vehicle reaches its destination.</p></article></div></section>
     <section className="shipping-coverage"><div className="wrap-wide"><header><p className="garage-kicker">Flexible logistics</p><h2>WHEREVER THE<br /><em>ROAD LEADS.</em></h2></header><div className="shipping-coverage-grid"><article><span>USA</span><h3>Nationwide delivery</h3><p>Request transport to any of the 50 states. Standard and expedited options are available.</p><b>Route quote available</b></article><article><span>INTL</span><h3>International shipping</h3><p>For overseas destinations, our team can coordinate the documentation and shipping options.</p><b>Quote on request</b></article><article><span>PICKUP</span><h3>Pickup coordination</h3><p>Prefer to arrange your own transport? Let us know and we will coordinate the handoff.</p><b>By appointment</b></article></div></div></section>
     <button className="shipping-back text-back wrap-wide" onClick={() => go('/inventory')}>← Back to inventory</button>

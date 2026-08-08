@@ -261,3 +261,10 @@
 @media (max-width: 800px) {
   .vehicle-detail .specs dl { grid-template-columns: 1fr; }
 }
+
+/* The delivery request is an explicit second step after the route is chosen. */
+.shipping-continue-wrap { display: flex; justify-content: center; padding-top: 28px; }
+.shipping-continue { border: 0; padding: 14px 26px; color: #171d1c; background: var(--amber); font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; transition: background .2s ease, transform .2s ease; }
+.shipping-continue:hover, .shipping-continue:focus-visible { background: #f0b03a; transform: translateY(-2px); outline: none; }
+.shipping-continue span { margin-left: 15px; font-size: 21px; vertical-align: -1px; }
+.shipping-quote:focus { outline: none; }
