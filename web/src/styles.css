@@ -268,3 +268,18 @@
 .shipping-continue:hover, .shipping-continue:focus-visible { background: #f0b03a; transform: translateY(-2px); outline: none; }
 .shipping-continue span { margin-left: 15px; font-size: 21px; vertical-align: -1px; }
 .shipping-quote:focus { outline: none; }
+
+/* A transport promise section that reinforces the care behind every route. */
+.shipping-protection { padding: 0 0 104px; }
+.shipping-protection-inner { padding: 52px 56px 0; overflow: hidden; border-top: 3px solid var(--amber); color: var(--paper); background: #252e2d; box-shadow: 0 18px 42px rgba(28,34,33,.15); }
+.shipping-protection header { display: grid; grid-template-columns: 1fr .6fr; gap: 11%; align-items: end; padding-bottom: 48px; }
+.shipping-protection h2 { margin: 0; color: var(--paper); font-size: clamp(46px, 5.4vw, 70px); line-height: .86; }
+.shipping-protection h2 em { color: var(--amber); font-style: normal; }
+.shipping-protection header > p { max-width: 390px; margin: 0 0 4px; color: #c2c8c3; font-size: 14px; line-height: 1.65; }
+.shipping-protection-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(245,241,233,.22); }
+.shipping-protection-grid article { min-height: 244px; padding: 29px 30px 35px; border-right: 1px solid rgba(245,241,233,.18); }
+.shipping-protection-grid article:first-child { padding-left: 0; }.shipping-protection-grid article:last-child { border-right: 0; padding-right: 0; }
+.shipping-protection-grid span { color: var(--amber); font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 800; letter-spacing: .04em; }
+.shipping-protection-grid h3 { margin: 31px 0 13px; color: #fffdf8; font-family: 'Barlow Condensed', sans-serif; font-size: clamp(25px, 2.25vw, 32px); line-height: .9; text-transform: uppercase; }
+.shipping-protection-grid p { max-width: 285px; margin: 0; color: #b9c1bc; font-size: 13px; line-height: 1.62; }
+@media (max-width: 800px) { .shipping-protection { padding-bottom: 72px; }.shipping-protection-inner { padding: 38px 25px 0; }.shipping-protection header { grid-template-columns: 1fr; gap: 23px; padding-bottom: 32px; }.shipping-protection-grid { grid-template-columns: 1fr; }.shipping-protection-grid article, .shipping-protection-grid article:first-child, .shipping-protection-grid article:last-child { min-height: 0; padding: 25px 0; border-right: 0; border-bottom: 1px solid rgba(245,241,233,.18); }.shipping-protection-grid article:last-child { border-bottom: 0; }.shipping-protection-grid h3 { margin-top: 20px; } }
