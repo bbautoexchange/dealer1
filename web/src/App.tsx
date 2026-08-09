@@ -24,6 +24,10 @@ type Status = { type: 'idle' | 'sending' | 'success' | 'error'; message: string 
 const trustIconSources: Record<string, string> = { licensed: '/trust-icons/licensed.svg', authorized: '/trust-icons/authorized.svg', certified: '/trust-icons/certified.svg', '01': '/trust-icons/licensed.svg', '02': '/trust-icons/authorized.svg', '03': '/trust-icons/certified.svg' }
 const tradeInConditions = ['Concours / show quality', 'Excellent', 'Very good', 'Good driver', 'Fair', 'Project / restoration']
 
+function trackMetaPageView() {
+  (window as Window & { fbq?: (...args: unknown[]) => void }).fbq?.('track', 'PageView')
+}
+
 function friendlyPath(pathname: string): Route {
   const vehicle = pathname.match(/^\/inventory\/([^/]+)\/?$/)
   if (vehicle) return { page: 'detail', slug: decodeURIComponent(vehicle[1]) }
@@ -33,8 +37,8 @@ function friendlyPath(pathname: string): Route {
 
 function App() {
   const [route, setRoute] = useState(() => friendlyPath(window.location.pathname))
-  useEffect(() => { const pop = () => setRoute(friendlyPath(window.location.pathname)); window.addEventListener('popstate', pop); return () => window.removeEventListener('popstate', pop) }, [])
-  const go = (href: string) => { window.history.pushState({}, '', href); setRoute(friendlyPath(new URL(href, window.location.origin).pathname)); window.scrollTo({ top: 0, behavior: 'smooth' }) }
+  useEffect(() => { const pop = () => { setRoute(friendlyPath(window.location.pathname)); trackMetaPageView() }; window.addEventListener('popstate', pop); return () => window.removeEventListener('popstate', pop) }, [])
+  const go = (href: string) => { window.history.pushState({}, '', href); setRoute(friendlyPath(new URL(href, window.location.origin).pathname)); trackMetaPageView(); window.scrollTo({ top: 0, behavior: 'smooth' }) }
   return <div className="site-shell">
     <HeaderHollywood page={route.page} go={go} />
     <main>
