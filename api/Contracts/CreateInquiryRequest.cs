@@ -24,4 +24,7 @@ public sealed class CreateInquiryRequest
 
     [Url, StringLength(2_000)]
     public string? PageUrl { get; init; }
+
+    [StringLength(100)]
+    public string? MetaEventId { get; init; }
 }

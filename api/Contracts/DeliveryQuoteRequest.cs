@@ -12,4 +12,5 @@ public sealed class DeliveryQuoteRequest
     [Range(50, 4_000)] public int DistanceMiles { get; init; }
     [StringLength(120)] public string? Vehicle { get; init; }
     [Url, StringLength(2_000)] public string? PageUrl { get; init; }
+    [StringLength(100)] public string? MetaEventId { get; init; }
 }

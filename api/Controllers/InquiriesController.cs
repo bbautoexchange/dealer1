@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RetroDrive.Api.Contracts;
+using RetroDrive.Api.Models;
 using RetroDrive.Api.Services;
 
 namespace RetroDrive.Api.Controllers;
@@ -9,6 +10,7 @@ namespace RetroDrive.Api.Controllers;
 public sealed class InquiriesController(
     InventoryStore inventory,
     ICloseLeadClient closeLeadClient,
+    IMetaConversionsClient metaConversions,
     ILogger<InquiriesController> logger) : ControllerBase
 {
     [HttpPost]
@@ -31,6 +33,20 @@ public sealed class InquiriesController(
         try
         {
             await closeLeadClient.CreateLeadAsync(inquiry, vehicle, cancellationToken);
+            await metaConversions.TrackLeadAsync(
+                new WebsiteLead(
+                    $"Vehicle inquiry - {vehicle.Year} {vehicle.Make} {vehicle.Model}",
+                    inquiry.FirstName,
+                    inquiry.LastName,
+                    inquiry.Email,
+                    inquiry.Phone,
+                    "Vehicle inquiry submitted from the website.",
+                    inquiry.PageUrl,
+                    "Website vehicle inquiry",
+                    $"{vehicle.Year} {vehicle.Make} {vehicle.Model}"),
+                inquiry.MetaEventId,
+                Request,
+                cancellationToken);
             return StatusCode(StatusCodes.Status201Created, new CreateInquiryResponse(
                 true,
                 "Thank you — your inquiry has been received. We will be in touch shortly."));

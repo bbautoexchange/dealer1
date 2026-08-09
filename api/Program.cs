@@ -14,6 +14,7 @@ builder.Services.Configure<TrustedNetworkOptions>(builder.Configuration.GetSecti
 builder.Services.Configure<ShippingOptions>(builder.Configuration.GetSection(ShippingOptions.SectionName));
 builder.Services.Configure<AboutOptions>(builder.Configuration.GetSection(AboutOptions.SectionName));
 builder.Services.Configure<SiteSettingsOptions>(builder.Configuration.GetSection(SiteSettingsOptions.SectionName));
+builder.Services.Configure<MetaConversionsOptions>(builder.Configuration.GetSection(MetaConversionsOptions.SectionName));
 builder.Services.AddSingleton<VehicleCatalog>();
 builder.Services.AddSingleton<InventoryStore>();
 builder.Services.AddSingleton<AdminSessionService>();
@@ -24,6 +25,11 @@ builder.Services.AddHttpClient<ICloseLeadClient, CloseLeadClient>(client =>
 {
     client.BaseAddress = new Uri("https://api.close.com/api/v1/");
     client.Timeout = TimeSpan.FromSeconds(15);
+});
+builder.Services.AddHttpClient<IMetaConversionsClient, MetaConversionsClient>(client =>
+{
+    client.BaseAddress = new Uri("https://graph.facebook.com/");
+    client.Timeout = TimeSpan.FromSeconds(10);
 });
 
 builder.Services.AddCors(options =>

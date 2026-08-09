@@ -3,6 +3,16 @@ import type { AboutContent, AdminSession, AdminVehicle, AdminVehicleInput, Conta
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? 'http://localhost:5141' : '')
 
+type MetaPixelWindow = Window & { fbq?: (...args: unknown[]) => void }
+
+function createMetaEventId() {
+  return `lead_${typeof crypto?.randomUUID === 'function' ? crypto.randomUUID() : `${Date.now()}_${Math.random().toString(36).slice(2)}`}`
+}
+
+function trackMetaLead(eventId: string) {
+  ;(window as MetaPixelWindow).fbq?.('track', 'Lead', {}, { eventID: eventId })
+}
+
 export const defaultTrustedNetwork: TrustedNetworkContent = {
   metrics: [
     { value: 'Retro only', label: 'Inventory focus', detail: 'Classic vehicles with character' },
@@ -83,15 +93,19 @@ export async function getSiteSettings(): Promise<SiteSettingsContent> {
 }
 
 export async function submitInquiry(inquiry: InquiryForm): Promise<string> {
+  const metaEventId = createMetaEventId()
   const response = await request<{ message: string }>('/api/inquiries', {
     method: 'POST',
-    body: JSON.stringify(inquiry),
+    body: JSON.stringify({ ...inquiry, metaEventId }),
   })
+  trackMetaLead(metaEventId)
   return response.message
 }
 
 async function submitLead(path: string, body: object): Promise<string> {
-  const response = await request<{ message: string }>(path, { method: 'POST', body: JSON.stringify(body) })
+  const metaEventId = createMetaEventId()
+  const response = await request<{ message: string }>(path, { method: 'POST', body: JSON.stringify({ ...body, metaEventId }) })
+  trackMetaLead(metaEventId)
   return response.message
 }
 

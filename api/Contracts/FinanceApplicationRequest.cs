@@ -17,4 +17,5 @@ public sealed class FinanceApplicationRequest
     [StringLength(120)] public string? VehicleSlug { get; init; }
     [StringLength(120)] public string? VehiclePriceLabel { get; init; }
     [Url, StringLength(2_000)] public string? PageUrl { get; init; }
+    [StringLength(100)] public string? MetaEventId { get; init; }
 }
