@@ -28,7 +28,8 @@ public sealed class CloseLeadClient(
                 "Website",
                 $"{vehicle.Year} {vehicle.Make} {vehicle.Model}",
                 vehicle.Vin,
-                vehicle.PriceText ?? $"${vehicle.Price:N0}"),
+                vehicle.PriceText ?? $"${vehicle.Price:N0}",
+                inquiry.Attribution),
             cancellationToken);
 
     public async Task<bool> CreateLeadAsync(WebsiteLead lead, CancellationToken cancellationToken)
@@ -46,6 +47,7 @@ public sealed class CloseLeadClient(
         AddCustomField(customFields, settings, "Vehicle", lead.Vehicle ?? string.Empty);
         AddCustomField(customFields, settings, "Vin", lead.Vin ?? string.Empty);
         AddCustomField(customFields, settings, "Price", lead.Price ?? string.Empty);
+        AddCustomField(customFields, settings, "Attribution", lead.Attribution ?? string.Empty);
 
         var contacts = new Dictionary<string, object>
         {
@@ -62,7 +64,7 @@ public sealed class CloseLeadClient(
         var payload = new Dictionary<string, object>
         {
             ["name"] = lead.Name.Trim(),
-            ["description"] = lead.Description.Trim(),
+            ["description"] = AddAttribution(lead.Description, lead.Attribution),
             ["contacts"] = new[] { contacts }
         };
 
@@ -153,4 +155,8 @@ public sealed class CloseLeadClient(
 
     private static string BuildVehicleDescription(CreateInquiryRequest inquiry, Vehicle vehicle) =>
         $"Website vehicle inquiry\n\nVehicle: {vehicle.Year} {vehicle.Make} {vehicle.Model}\nVIN: {vehicle.Vin}\nPrice: {vehicle.PriceText ?? $"${vehicle.Price:N0}"}\nSource: Website\nPage: {inquiry.PageUrl ?? "Not provided"}\n\nMessage:\n{(string.IsNullOrWhiteSpace(inquiry.Message) ? "No message provided." : inquiry.Message.Trim())}";
+
+    private static string AddAttribution(string description, string? attribution) => string.IsNullOrWhiteSpace(attribution)
+        ? description.Trim()
+        : $"{description.Trim()}\n\nAd attribution:\n{attribution.Trim()}";
 }

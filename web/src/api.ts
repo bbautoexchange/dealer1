@@ -4,6 +4,30 @@ import type { AboutContent, AdminSession, AdminVehicle, AdminVehicleInput, Conta
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? 'http://localhost:5141' : '')
 
 type MetaPixelWindow = Window & { fbq?: (...args: unknown[]) => void }
+const attributionKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid'] as const
+const attributionStorageKey = 'bb-auto-exchange-ad-attribution'
+
+function getAttributionFromUrl() {
+  const values = new URLSearchParams()
+  const parameters = new URLSearchParams(window.location.search)
+  for (const key of attributionKeys) {
+    const value = parameters.get(key)?.trim()
+    if (value) values.set(key, value.slice(0, 500))
+  }
+  return values.toString()
+}
+
+function getAttribution() {
+  const current = getAttributionFromUrl()
+  try {
+    if (current) sessionStorage.setItem(attributionStorageKey, current)
+    return current || sessionStorage.getItem(attributionStorageKey) || undefined
+  } catch {
+    return current || undefined
+  }
+}
+
+const initialAttribution = getAttribution()
 
 function createMetaEventId() {
   return `lead_${typeof crypto?.randomUUID === 'function' ? crypto.randomUUID() : `${Date.now()}_${Math.random().toString(36).slice(2)}`}`
@@ -96,7 +120,7 @@ export async function submitInquiry(inquiry: InquiryForm): Promise<string> {
   const metaEventId = createMetaEventId()
   const response = await request<{ message: string }>('/api/inquiries', {
     method: 'POST',
-    body: JSON.stringify({ ...inquiry, metaEventId }),
+    body: JSON.stringify({ ...inquiry, metaEventId, attribution: getAttribution() ?? initialAttribution }),
   })
   trackMetaLead(metaEventId)
   return response.message
@@ -104,7 +128,7 @@ export async function submitInquiry(inquiry: InquiryForm): Promise<string> {
 
 async function submitLead(path: string, body: object): Promise<string> {
   const metaEventId = createMetaEventId()
-  const response = await request<{ message: string }>(path, { method: 'POST', body: JSON.stringify({ ...body, metaEventId }) })
+  const response = await request<{ message: string }>(path, { method: 'POST', body: JSON.stringify({ ...body, metaEventId, attribution: getAttribution() ?? initialAttribution }) })
   trackMetaLead(metaEventId)
   return response.message
 }

@@ -27,4 +27,7 @@ public sealed class CreateInquiryRequest
 
     [StringLength(100)]
     public string? MetaEventId { get; init; }
+
+    [StringLength(2_000)]
+    public string? Attribution { get; init; }
 }

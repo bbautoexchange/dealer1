@@ -20,26 +20,26 @@ public sealed class WebsiteLeadsController(
         var vehiclePrice = string.IsNullOrWhiteSpace(request.VehiclePriceLabel) ? $"${request.VehiclePrice:N0}" : request.VehiclePriceLabel.Trim();
 
         return Deliver(new WebsiteLead($"Website finance application - {vehicleName}", request.FirstName, request.LastName, request.Email, request.Phone,
-            $"Finance inquiry\n\nVehicle: {vehicleName}\nVIN: {vehicleVin}\nVehicle price: {vehiclePrice}\nDown payment: ${request.DownPayment:N0}\nEstimated APR: {request.InterestRate:0.##}%\nTerm: {request.TermMonths} months\nSource: Website", request.PageUrl, "Website finance application", vehicleName, request.VehicleVin, vehiclePrice),
+            $"Finance inquiry\n\nVehicle: {vehicleName}\nVIN: {vehicleVin}\nVehicle price: {vehiclePrice}\nDown payment: ${request.DownPayment:N0}\nEstimated APR: {request.InterestRate:0.##}%\nTerm: {request.TermMonths} months\nSource: Website", request.PageUrl, "Website finance application", vehicleName, request.VehicleVin, vehiclePrice, request.Attribution),
             "Your finance request has been received. A specialist will follow up shortly.", request.MetaEventId, cancellationToken);
     }
 
     [HttpPost("trade-in")]
     public Task<ActionResult<CreateInquiryResponse>> TradeIn([FromBody] TradeInRequest request, CancellationToken cancellationToken) =>
         Deliver(new WebsiteLead("Website trade-in appraisal", request.FirstName, request.LastName, request.Email, request.Phone,
-            $"Trade-in appraisal request\n\nVehicle: {request.Year} {request.Make} {request.Model}\nMileage: {request.Mileage:N0}\nCondition: {request.Condition}\nMessage: {request.Message}\nSource: Website", request.PageUrl, "Website trade-in"),
+            $"Trade-in appraisal request\n\nVehicle: {request.Year} {request.Make} {request.Model}\nMileage: {request.Mileage:N0}\nCondition: {request.Condition}\nMessage: {request.Message}\nSource: Website", request.PageUrl, "Website trade-in", Attribution: request.Attribution),
             "Your appraisal request has been received. We will be in touch shortly.", request.MetaEventId, cancellationToken);
 
     [HttpPost("newsletter")]
     public Task<ActionResult<CreateInquiryResponse>> Newsletter([FromBody] NewsletterRequest request, CancellationToken cancellationToken) =>
         Deliver(new WebsiteLead("Website VIP list subscription", "VIP", "Subscriber", request.Email, null,
-            "Requested email alerts for B & B Auto Exchange arrivals and updates.\nSource: Website VIP list", request.PageUrl, "Website VIP list"),
+            "Requested email alerts for B & B Auto Exchange arrivals and updates.\nSource: Website VIP list", request.PageUrl, "Website VIP list", Attribution: request.Attribution),
             "You are on the B & B Auto Exchange VIP list. Watch your inbox for new arrivals.", request.MetaEventId, cancellationToken);
 
     [HttpPost("delivery")]
     public Task<ActionResult<CreateInquiryResponse>> Delivery([FromBody] DeliveryQuoteRequest request, CancellationToken cancellationToken) =>
         Deliver(new WebsiteLead("Website delivery quote", request.FirstName, request.LastName, request.Email, request.Phone,
-            $"Delivery quote request\n\nDestination: {request.Destination}\nEstimated route: {request.DistanceMiles:N0} miles\nVehicle: {request.Vehicle ?? "Not selected"}\nSource: Website", request.PageUrl, "Website delivery quote"),
+            $"Delivery quote request\n\nDestination: {request.Destination}\nEstimated route: {request.DistanceMiles:N0} miles\nVehicle: {request.Vehicle ?? "Not selected"}\nSource: Website", request.PageUrl, "Website delivery quote", Attribution: request.Attribution),
             "Your delivery quote request has been received. Our logistics team will follow up shortly.", request.MetaEventId, cancellationToken);
 
     private async Task<ActionResult<CreateInquiryResponse>> Deliver(WebsiteLead lead, string successMessage, string? metaEventId, CancellationToken cancellationToken)

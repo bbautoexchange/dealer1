@@ -11,4 +11,5 @@ public sealed record WebsiteLead(
     string Source = "Website",
     string? Vehicle = null,
     string? Vin = null,
-    string? Price = null);
+    string? Price = null,
+    string? Attribution = null);
