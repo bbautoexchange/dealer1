@@ -28,6 +28,10 @@
 @media (max-width: 600px) { .hollywood-footer-grid { grid-template-columns: 1fr; gap: 42px; padding: 57px 0 48px; }.hollywood-footer h2 { margin-bottom: 20px; }.hollywood-footer-company > p { margin: 26px 0 21px; }.hollywood-footer-bottom { gap: 17px; padding: 26px 20px 33px; }.hollywood-footer-bottom > div { gap: 13px 19px; }.hollywood-footer-bottom button { font-size: 11px; } }
 
 /* Keep showroom hours readable on one clean line. */
+.hollywood-footer-vip form { display: grid; gap: 8px; overflow: visible; border: 0; border-radius: 0; }
+.hollywood-footer-vip input { width: 100%; min-height: 42px; box-sizing: border-box; border: 1px solid rgba(203,216,224,.22); border-radius: 3px; padding: 10px 12px; }
+.hollywood-footer-vip input:focus { border-color: var(--amber); }
+.hollywood-footer-vip button { min-height: 42px; padding: 0 17px; border-radius: 3px; }
 .hollywood-footer-hours > div { grid-template-columns: 86px max-content; gap: 15px; }
 .hollywood-footer-hours b { white-space: nowrap; }
 

@@ -31,10 +31,16 @@ public sealed class WebsiteLeadsController(
             "Your appraisal request has been received. We will be in touch shortly.", request.MetaEventId, cancellationToken);
 
     [HttpPost("newsletter")]
-    public Task<ActionResult<CreateInquiryResponse>> Newsletter([FromBody] NewsletterRequest request, CancellationToken cancellationToken) =>
-        Deliver(new WebsiteLead("Website VIP list subscription", "VIP", "Subscriber", request.Email, null,
-            "Requested email alerts for B & B Auto Exchange arrivals and updates.\nSource: Website VIP list", request.PageUrl, "Website VIP list", Attribution: request.Attribution),
+    public Task<ActionResult<CreateInquiryResponse>> Newsletter([FromBody] NewsletterRequest request, CancellationToken cancellationToken)
+    {
+        var name = request.FullName.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var firstName = name.FirstOrDefault() ?? "VIP";
+        var lastName = name.Skip(1).FirstOrDefault() ?? "Subscriber";
+
+        return Deliver(new WebsiteLead("Website VIP list subscription", firstName, lastName, request.Email, request.Phone,
+            $"VIP list subscription\n\nFull name: {request.FullName.Trim()}\nPhone: {request.Phone.Trim()}\nSource: Website VIP list", request.PageUrl, "Website VIP list", Attribution: request.Attribution),
             "You are on the B & B Auto Exchange VIP list. Watch your inbox for new arrivals.", request.MetaEventId, cancellationToken);
+    }
 
     [HttpPost("delivery")]
     public Task<ActionResult<CreateInquiryResponse>> Delivery([FromBody] DeliveryQuoteRequest request, CancellationToken cancellationToken) =>

@@ -145,7 +145,7 @@ export function submitDelivery(body: ContactFields & { destination: string; dist
   return submitLead('/api/leads/delivery', body)
 }
 
-export function subscribeVip(body: { email: string; pageUrl: string }) {
+export function subscribeVip(body: { fullName: string; phone: string; email: string; pageUrl: string }) {
   return submitLead('/api/leads/newsletter', body)
 }
 
