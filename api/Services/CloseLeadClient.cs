@@ -29,7 +29,9 @@ public sealed class CloseLeadClient(
                 $"{vehicle.Year} {vehicle.Make} {vehicle.Model}",
                 vehicle.Vin,
                 vehicle.PriceText ?? $"${vehicle.Price:N0}",
-                inquiry.Attribution),
+                inquiry.Attribution,
+                inquiry.SmsCustomerCareConsent,
+                inquiry.SmsMarketingConsent),
             cancellationToken);
 
     public async Task<bool> CreateLeadAsync(WebsiteLead lead, CancellationToken cancellationToken)
@@ -48,6 +50,8 @@ public sealed class CloseLeadClient(
         AddCustomField(customFields, settings, "Vin", lead.Vin ?? string.Empty);
         AddCustomField(customFields, settings, "Price", lead.Price ?? string.Empty);
         AddCustomField(customFields, settings, "Attribution", lead.Attribution ?? string.Empty);
+        AddCustomField(customFields, settings, "SmsCustomerCareConsent", lead.SmsCustomerCareConsent ? "Yes" : "No");
+        AddCustomField(customFields, settings, "SmsMarketingConsent", lead.SmsMarketingConsent ? "Yes" : "No");
 
         var contacts = new Dictionary<string, object>
         {
@@ -64,7 +68,7 @@ public sealed class CloseLeadClient(
         var payload = new Dictionary<string, object>
         {
             ["name"] = lead.Name.Trim(),
-            ["description"] = AddAttribution(lead.Description, lead.Attribution),
+            ["description"] = AddSmsConsent(AddAttribution(lead.Description, lead.Attribution), lead.SmsCustomerCareConsent, lead.SmsMarketingConsent),
             ["contacts"] = new[] { contacts }
         };
 
@@ -159,4 +163,7 @@ public sealed class CloseLeadClient(
     private static string AddAttribution(string description, string? attribution) => string.IsNullOrWhiteSpace(attribution)
         ? description.Trim()
         : $"{description.Trim()}\n\nAd attribution:\n{attribution.Trim()}";
+
+    private static string AddSmsConsent(string description, bool customerCare, bool marketing) =>
+        $"{description.Trim()}\n\nSMS consent:\nCustomer care & notifications: {(customerCare ? "Yes" : "No")}\nMarketing & promotional: {(marketing ? "Yes" : "No")}";
 }

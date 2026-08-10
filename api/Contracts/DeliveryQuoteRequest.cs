@@ -14,4 +14,6 @@ public sealed class DeliveryQuoteRequest
     [Url, StringLength(2_000)] public string? PageUrl { get; init; }
     [StringLength(100)] public string? MetaEventId { get; init; }
     [StringLength(2_000)] public string? Attribution { get; init; }
+    public bool SmsCustomerCareConsent { get; init; }
+    public bool SmsMarketingConsent { get; init; }
 }

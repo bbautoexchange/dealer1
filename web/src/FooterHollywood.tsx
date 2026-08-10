@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getSiteSettings, subscribeVip } from './api'
+import SmsConsent, { emptySmsConsent, type SmsConsentState } from './SmsConsent'
 import type { SiteSettingsContent } from './types'
 
 type Props = { go: (href: string) => void }
@@ -31,6 +32,7 @@ export default function FooterHollywood({ go }: Props) {
   const [fullName, setFullName] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [email, setEmail] = useState('')
+  const [smsConsent, setSmsConsent] = useState<SmsConsentState>(emptySmsConsent)
   const [status, setStatus] = useState<Status>({ type: 'idle', message: '' })
   useEffect(() => { void getSiteSettings().then(setSettings).catch(() => undefined) }, [])
 
@@ -40,10 +42,11 @@ export default function FooterHollywood({ go }: Props) {
     event.preventDefault()
     setStatus({ type: 'sending', message: 'Joining...' })
     try {
-      setStatus({ type: 'success', message: await subscribeVip({ fullName, phone: phoneNumber, email, pageUrl: window.location.href }) })
+      setStatus({ type: 'success', message: await subscribeVip({ fullName, phone: phoneNumber, email, pageUrl: window.location.href, ...smsConsent }) })
       setFullName('')
       setPhoneNumber('')
       setEmail('')
+      setSmsConsent(emptySmsConsent)
     } catch {
       setStatus({ type: 'error', message: 'Please try again in a moment.' })
     }
@@ -83,6 +86,7 @@ export default function FooterHollywood({ go }: Props) {
           <input required autoComplete="name" value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Full name" aria-label="Full name" />
           <input required type="tel" autoComplete="tel" value={phoneNumber} onChange={(event) => setPhoneNumber(event.target.value)} placeholder="Phone number" aria-label="Phone number" />
           <input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Email address" aria-label="Email address" />
+          <SmsConsent value={smsConsent} onChange={setSmsConsent} />
           <button disabled={status.type === 'sending'}>{status.type === 'sending' ? 'Joining...' : 'Join'}</button>
         </form>
         {status.type !== 'idle' && <small className={`hollywood-footer-status ${status.type}`}>{status.message}</small>}

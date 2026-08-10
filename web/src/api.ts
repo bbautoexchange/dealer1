@@ -4,6 +4,7 @@ import type { AboutContent, AdminSession, AdminVehicle, AdminVehicleInput, Conta
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? 'http://localhost:5141' : '')
 
 type MetaPixelWindow = Window & { fbq?: (...args: unknown[]) => void }
+type SmsConsentPayload = { smsCustomerCareConsent: boolean; smsMarketingConsent: boolean }
 const attributionKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid'] as const
 const attributionStorageKey = 'bb-auto-exchange-ad-attribution'
 
@@ -116,7 +117,7 @@ export async function getSiteSettings(): Promise<SiteSettingsContent> {
   return request<SiteSettingsContent>('/api/site/settings')
 }
 
-export async function submitInquiry(inquiry: InquiryForm): Promise<string> {
+export async function submitInquiry(inquiry: InquiryForm & SmsConsentPayload): Promise<string> {
   const metaEventId = createMetaEventId()
   const response = await request<{ message: string }>('/api/inquiries', {
     method: 'POST',
@@ -133,19 +134,19 @@ async function submitLead(path: string, body: object): Promise<string> {
   return response.message
 }
 
-export function submitFinance(body: ContactFields & { vehiclePrice: number; downPayment: number; interestRate: number; termMonths: number; vehicleName?: string; vehicleVin?: string; vehicleSlug?: string; vehiclePriceLabel?: string }) {
+export function submitFinance(body: ContactFields & SmsConsentPayload & { vehiclePrice: number; downPayment: number; interestRate: number; termMonths: number; vehicleName?: string; vehicleVin?: string; vehicleSlug?: string; vehiclePriceLabel?: string }) {
   return submitLead('/api/leads/finance', body)
 }
 
-export function submitTradeIn(body: ContactFields & { year: number; make: string; model: string; mileage: number; condition: string; message: string }) {
+export function submitTradeIn(body: ContactFields & SmsConsentPayload & { year: number; make: string; model: string; mileage: number; condition: string; message: string }) {
   return submitLead('/api/leads/trade-in', body)
 }
 
-export function submitDelivery(body: ContactFields & { destination: string; distanceMiles: number; vehicle?: string }) {
+export function submitDelivery(body: ContactFields & SmsConsentPayload & { destination: string; distanceMiles: number; vehicle?: string }) {
   return submitLead('/api/leads/delivery', body)
 }
 
-export function subscribeVip(body: { fullName: string; phone: string; email: string; pageUrl: string }) {
+export function subscribeVip(body: SmsConsentPayload & { fullName: string; phone: string; email: string; pageUrl: string }) {
   return submitLead('/api/leads/newsletter', body)
 }
 

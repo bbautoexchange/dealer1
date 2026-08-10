@@ -12,4 +12,6 @@ public sealed record WebsiteLead(
     string? Vehicle = null,
     string? Vin = null,
     string? Price = null,
-    string? Attribution = null);
+    string? Attribution = null,
+    bool SmsCustomerCareConsent = false,
+    bool SmsMarketingConsent = false);

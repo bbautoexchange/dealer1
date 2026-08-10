@@ -29,8 +29,8 @@
 
 /* Keep showroom hours readable on one clean line. */
 .hollywood-footer-vip form { display: grid; gap: 8px; overflow: visible; border: 0; border-radius: 0; }
-.hollywood-footer-vip input { width: 100%; min-height: 42px; box-sizing: border-box; border: 1px solid rgba(203,216,224,.22); border-radius: 3px; padding: 10px 12px; }
-.hollywood-footer-vip input:focus { border-color: var(--amber); }
+.hollywood-footer-vip form > input { width: 100%; min-height: 42px; box-sizing: border-box; border: 1px solid rgba(203,216,224,.22); border-radius: 3px; padding: 10px 12px; }
+.hollywood-footer-vip form > input:focus { border-color: var(--amber); }
 .hollywood-footer-vip button { min-height: 42px; padding: 0 17px; border-radius: 3px; }
 .hollywood-footer-hours > div { grid-template-columns: 86px max-content; gap: 15px; }
 .hollywood-footer-hours b { white-space: nowrap; }
@@ -298,3 +298,14 @@
 .shipping-protection-grid h3 { margin: 31px 0 13px; color: #fffdf8; font-family: 'Barlow Condensed', sans-serif; font-size: clamp(25px, 2.25vw, 32px); line-height: .9; text-transform: uppercase; }
 .shipping-protection-grid p { max-width: 285px; margin: 0; color: #b9c1bc; font-size: 13px; line-height: 1.62; }
 @media (max-width: 800px) { .shipping-protection { padding-bottom: 72px; }.shipping-protection-inner { padding: 38px 25px 0; }.shipping-protection header { grid-template-columns: 1fr; gap: 23px; padding-bottom: 32px; }.shipping-protection-grid { grid-template-columns: 1fr; }.shipping-protection-grid article, .shipping-protection-grid article:first-child, .shipping-protection-grid article:last-child { min-height: 0; padding: 25px 0; border-right: 0; border-bottom: 1px solid rgba(245,241,233,.18); }.shipping-protection-grid article:last-child { border-bottom: 0; }.shipping-protection-grid h3 { margin-top: 20px; } }
+
+/* Optional SMS consent record for every customer form. */
+.sms-consent { display: grid; gap: 9px; min-width: 0; margin: 4px 0; border: 0; border-top: 1px solid rgba(126,139,135,.42); padding: 16px 0 0; }
+.sms-consent legend { padding: 0; color: var(--amber); font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.sms-consent > p, .sms-consent > small { margin: 0; color: #697572; font-family: Barlow, Arial, sans-serif; font-size: 10px; font-weight: 400; letter-spacing: 0; line-height: 1.5; text-transform: none; }
+.sms-consent-option { display: flex !important; align-items: flex-start; gap: 8px; color: #36413f !important; font-family: Barlow, Arial, sans-serif; font-size: 11px !important; font-weight: 500; letter-spacing: 0 !important; line-height: 1.45; text-transform: none !important; }
+.sms-consent-option input { width: 15px !important; height: 15px !important; min-height: 0 !important; flex: 0 0 auto; margin: 1px 0 0; border: 0 !important; padding: 0 !important; background: initial !important; accent-color: var(--amber-dark); }
+.sms-consent a { color: var(--amber-dark); font-weight: 700; text-decoration: underline; }
+.hollywood-footer-vip .sms-consent { border-top-color: rgba(203,216,224,.2); }
+.hollywood-footer-vip .sms-consent > p, .hollywood-footer-vip .sms-consent > small, .hollywood-footer-vip .sms-consent-option { color: #b4c4d0 !important; }
+.hollywood-footer-vip .sms-consent a { color: #e2ae5b; }
