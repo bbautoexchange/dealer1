@@ -5,4 +5,6 @@ public sealed class InquiryCooldownOptions
     public const string SectionName = "InquiryCooldown";
 
     public int SameVehicleHours { get; init; } = 24;
+
+    public int SameVehicleIpMinutes { get; init; } = 60;
 }

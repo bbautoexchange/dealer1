@@ -30,13 +30,18 @@ public sealed class InquiriesController(
         }
 
         var vehicle = item.Vehicle;
-        var reservation = await inquiryCooldown.TryReserveAsync(vehicle.Slug, inquiry.Email, inquiry.Phone, cancellationToken);
+        var clientIp = GetClientIpAddress();
+        var reservation = await inquiryCooldown.TryReserveAsync(vehicle.Slug, inquiry.Email, inquiry.Phone, clientIp, cancellationToken);
         if (!reservation.Allowed)
         {
+            var remaining = reservation.RetryAfter - DateTimeOffset.UtcNow;
+            var waitTime = remaining.TotalHours > 1.5
+                ? $"{Math.Max(1, Math.Ceiling(remaining.TotalHours))} hours"
+                : $"{Math.Max(1, Math.Ceiling(remaining.TotalMinutes))} minutes";
             return Problem(
                 statusCode: StatusCodes.Status429TooManyRequests,
                 title: "You have already sent an inquiry for this vehicle.",
-                detail: "To avoid duplicate messages, please wait 24 hours before sending another inquiry for the same vehicle. You can also contact B & B Auto Exchange directly if you need to add information.");
+                detail: $"To avoid duplicate messages, please wait about {waitTime} before sending another inquiry for the same vehicle. You can also contact B & B Auto Exchange directly if you need to add information.");
         }
 
         try
@@ -62,7 +67,7 @@ public sealed class InquiriesController(
         }
         catch (CloseCrmNotConfiguredException)
         {
-            await inquiryCooldown.ReleaseAsync(vehicle.Slug, inquiry.Email, inquiry.Phone, cancellationToken);
+            await inquiryCooldown.ReleaseAsync(vehicle.Slug, inquiry.Email, inquiry.Phone, clientIp, cancellationToken);
             return Problem(
                 statusCode: StatusCodes.Status503ServiceUnavailable,
                 title: "Inquiries are temporarily unavailable.",
@@ -70,7 +75,7 @@ public sealed class InquiriesController(
         }
         catch (HttpRequestException exception)
         {
-            await inquiryCooldown.ReleaseAsync(vehicle.Slug, inquiry.Email, inquiry.Phone, cancellationToken);
+            await inquiryCooldown.ReleaseAsync(vehicle.Slug, inquiry.Email, inquiry.Phone, clientIp, cancellationToken);
             logger.LogError(exception, "Close CRM could not be reached for vehicle {VehicleSlug}.", vehicle.Slug);
             return Problem(
                 statusCode: StatusCodes.Status502BadGateway,
@@ -79,8 +84,16 @@ public sealed class InquiriesController(
         }
         catch
         {
-            await inquiryCooldown.ReleaseAsync(vehicle.Slug, inquiry.Email, inquiry.Phone, cancellationToken);
+            await inquiryCooldown.ReleaseAsync(vehicle.Slug, inquiry.Email, inquiry.Phone, clientIp, cancellationToken);
             throw;
         }
+    }
+
+    private string? GetClientIpAddress()
+    {
+        var forwardedFor = Request.Headers["X-Forwarded-For"].ToString();
+        if (!string.IsNullOrWhiteSpace(forwardedFor)) return forwardedFor;
+
+        return HttpContext.Connection.RemoteIpAddress?.ToString();
     }
 }

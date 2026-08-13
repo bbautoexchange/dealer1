@@ -1,3 +1,4 @@
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Data.Sqlite;
@@ -11,6 +12,7 @@ public sealed class VehicleInquiryCooldown
     private readonly string databasePath;
     private readonly string connectionString;
     private readonly TimeSpan cooldown;
+    private readonly TimeSpan ipCooldown;
 
     public VehicleInquiryCooldown(
         IWebHostEnvironment environment,
@@ -26,6 +28,7 @@ public sealed class VehicleInquiryCooldown
             Cache = SqliteCacheMode.Shared
         }.ToString();
         cooldown = TimeSpan.FromHours(Math.Clamp(options.Value.SameVehicleHours, 1, 168));
+        ipCooldown = TimeSpan.FromMinutes(Math.Clamp(options.Value.SameVehicleIpMinutes, 1, 1440));
     }
 
     public async Task InitializeAsync(CancellationToken cancellationToken = default)
@@ -52,16 +55,11 @@ public sealed class VehicleInquiryCooldown
         string vehicleSlug,
         string email,
         string phone,
+        string? clientIp,
         CancellationToken cancellationToken = default)
     {
-        var identifiers = new[]
-        {
-            Hash(NormalizeEmail(email)),
-            Hash(NormalizePhone(phone))
-        }.Distinct(StringComparer.Ordinal).ToArray();
-
         var now = DateTimeOffset.UtcNow;
-        var expiresAt = now.Add(cooldown);
+        var identifiers = GetIdentifiers(email, phone, clientIp, now.Add(cooldown), now.Add(ipCooldown));
 
         await using var connection = await OpenAsync(cancellationToken);
         await using (var begin = connection.CreateCommand())
@@ -81,15 +79,14 @@ public sealed class VehicleInquiryCooldown
 
             await using (var existing = connection.CreateCommand())
             {
-                existing.CommandText = """
-                    SELECT MIN(expires_at)
+                var parameterNames = AddIdentifierParameters(existing, identifiers);
+                existing.CommandText = $"""
+                    SELECT MAX(expires_at)
                     FROM vehicle_inquiry_cooldowns
                     WHERE vehicle_slug = $vehicleSlug
-                      AND identifier_hash IN ($firstIdentifier, $secondIdentifier);
+                      AND identifier_hash IN ({string.Join(", ", parameterNames)});
                     """;
                 existing.Parameters.AddWithValue("$vehicleSlug", vehicleSlug.Trim());
-                existing.Parameters.AddWithValue("$firstIdentifier", identifiers[0]);
-                existing.Parameters.AddWithValue("$secondIdentifier", identifiers.Length > 1 ? identifiers[1] : identifiers[0]);
                 var value = await existing.ExecuteScalarAsync(cancellationToken);
                 if (value is string existingExpiry)
                 {
@@ -107,13 +104,13 @@ public sealed class VehicleInquiryCooldown
                     ON CONFLICT(vehicle_slug, identifier_hash) DO UPDATE SET expires_at = excluded.expires_at;
                     """;
                 insert.Parameters.AddWithValue("$vehicleSlug", vehicleSlug.Trim());
-                insert.Parameters.AddWithValue("$identifierHash", identifier);
-                insert.Parameters.AddWithValue("$expiresAt", expiresAt.ToString("O"));
+                insert.Parameters.AddWithValue("$identifierHash", identifier.Hash);
+                insert.Parameters.AddWithValue("$expiresAt", identifier.ExpiresAt.ToString("O"));
                 await insert.ExecuteNonQueryAsync(cancellationToken);
             }
 
             await CommitAsync(connection, cancellationToken);
-            return new InquiryCooldownResult(true, expiresAt);
+            return new InquiryCooldownResult(true, now.Add(cooldown));
         }
         catch
         {
@@ -122,21 +119,23 @@ public sealed class VehicleInquiryCooldown
         }
     }
 
-    public async Task ReleaseAsync(string vehicleSlug, string email, string phone, CancellationToken cancellationToken = default)
+    public async Task ReleaseAsync(
+        string vehicleSlug,
+        string email,
+        string phone,
+        string? clientIp,
+        CancellationToken cancellationToken = default)
     {
-        var identifiers = new[] { Hash(NormalizeEmail(email)), Hash(NormalizePhone(phone)) }
-            .Distinct(StringComparer.Ordinal)
-            .ToArray();
+        var identifiers = GetIdentifiers(email, phone, clientIp, DateTimeOffset.MinValue, DateTimeOffset.MinValue);
         await using var connection = await OpenAsync(cancellationToken);
         await using var command = connection.CreateCommand();
-        command.CommandText = """
+        var parameterNames = AddIdentifierParameters(command, identifiers);
+        command.CommandText = $"""
             DELETE FROM vehicle_inquiry_cooldowns
             WHERE vehicle_slug = $vehicleSlug
-              AND identifier_hash IN ($firstIdentifier, $secondIdentifier);
+              AND identifier_hash IN ({string.Join(", ", parameterNames)});
             """;
         command.Parameters.AddWithValue("$vehicleSlug", vehicleSlug.Trim());
-        command.Parameters.AddWithValue("$firstIdentifier", identifiers[0]);
-        command.Parameters.AddWithValue("$secondIdentifier", identifiers.Length > 1 ? identifiers[1] : identifiers[0]);
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
@@ -169,7 +168,55 @@ public sealed class VehicleInquiryCooldown
         return digits.Length == 10 ? $"1{digits}" : digits;
     }
 
+    private static IReadOnlyList<CooldownIdentifier> GetIdentifiers(
+        string email,
+        string phone,
+        string? clientIp,
+        DateTimeOffset contactExpiresAt,
+        DateTimeOffset ipExpiresAt)
+    {
+        var identifiers = new Dictionary<string, DateTimeOffset>(StringComparer.Ordinal)
+        {
+            [Hash(NormalizeEmail(email))] = contactExpiresAt,
+            [Hash(NormalizePhone(phone))] = contactExpiresAt
+        };
+
+        var normalizedIp = NormalizeIp(clientIp);
+        if (normalizedIp is not null)
+        {
+            identifiers[Hash($"ip:{normalizedIp}")] = ipExpiresAt;
+        }
+
+        return identifiers
+            .Select(identifier => new CooldownIdentifier(identifier.Key, identifier.Value))
+            .ToArray();
+    }
+
+    private static IReadOnlyList<string> AddIdentifierParameters(
+        SqliteCommand command,
+        IReadOnlyList<CooldownIdentifier> identifiers)
+    {
+        var parameterNames = new string[identifiers.Count];
+        for (var index = 0; index < identifiers.Count; index++)
+        {
+            parameterNames[index] = $"$identifier{index}";
+            command.Parameters.AddWithValue(parameterNames[index], identifiers[index].Hash);
+        }
+
+        return parameterNames;
+    }
+
+    private static string? NormalizeIp(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+
+        var candidate = value.Split(',', 2, StringSplitOptions.TrimEntries)[0];
+        return IPAddress.TryParse(candidate, out var address) ? address.ToString() : null;
+    }
+
     private static string Hash(string value) => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
+
+    private sealed record CooldownIdentifier(string Hash, DateTimeOffset ExpiresAt);
 }
 
 public sealed record InquiryCooldownResult(bool Allowed, DateTimeOffset RetryAfter);
