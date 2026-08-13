@@ -15,8 +15,10 @@ builder.Services.Configure<ShippingOptions>(builder.Configuration.GetSection(Shi
 builder.Services.Configure<AboutOptions>(builder.Configuration.GetSection(AboutOptions.SectionName));
 builder.Services.Configure<SiteSettingsOptions>(builder.Configuration.GetSection(SiteSettingsOptions.SectionName));
 builder.Services.Configure<MetaConversionsOptions>(builder.Configuration.GetSection(MetaConversionsOptions.SectionName));
+builder.Services.Configure<InquiryCooldownOptions>(builder.Configuration.GetSection(InquiryCooldownOptions.SectionName));
 builder.Services.AddSingleton<VehicleCatalog>();
 builder.Services.AddSingleton<InventoryStore>();
+builder.Services.AddSingleton<VehicleInquiryCooldown>();
 builder.Services.AddSingleton<AdminSessionService>();
 builder.Services.AddSingleton<CloudinaryUrlBuilder>();
 builder.Services.AddSingleton<TrustedNetworkContentProvider>();
@@ -48,6 +50,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 await app.Services.GetRequiredService<InventoryStore>().InitializeAsync();
+await app.Services.GetRequiredService<VehicleInquiryCooldown>().InitializeAsync();
 
 app.UseExceptionHandler();
 if (!app.Environment.IsDevelopment())
